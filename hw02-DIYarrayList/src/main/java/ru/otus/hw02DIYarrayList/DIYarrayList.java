@@ -37,7 +37,7 @@ public class DIYarrayList<T> implements List<T> {
     @Override
     public String toString() {
         return Arrays.stream(array)
-                .limit(size())
+                .limit(size)
                 .map(o -> o == null ? "null" : o.toString())
                 .collect(Collectors.joining(",", "{", "}"));
     }
@@ -45,7 +45,7 @@ public class DIYarrayList<T> implements List<T> {
     @Override
     @SuppressWarnings("unchecked")
     public T get(int index) {
-        if (index < 0 || index >= size()) {
+        if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException();
         }
         return (T) array[index];
@@ -54,7 +54,7 @@ public class DIYarrayList<T> implements List<T> {
     @Override
     @SuppressWarnings("unchecked")
     public T set(int index, T element) {
-        if (index < 0 || index >= size()) {
+        if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException();
         }
         T prevValue = (T) array[index];
@@ -64,17 +64,17 @@ public class DIYarrayList<T> implements List<T> {
 
     @Override
     public boolean add(T t) {
-        if (size() == array.length) {
-            array = Arrays.copyOf(array, (int) (size() * MULTIPLY_ARRAY_SIZE));
+        if (size == array.length) {
+            array = Arrays.copyOf(array, (int) (size * MULTIPLY_ARRAY_SIZE));
         }
-        array[size()] = t;
+        array[size] = t;
         size++;
         return true;
     }
 
     @Override
     public Object[] toArray() {
-        return Arrays.copyOf(array, size());
+        return Arrays.copyOf(array, size);
     }
 
     @Override
@@ -89,12 +89,12 @@ public class DIYarrayList<T> implements List<T> {
 
         @Override
         public boolean hasNext() {
-            return cursor < size();
+            return cursor < size;
         }
 
         @Override
         public T next() {
-            if (cursor >= size()) {
+            if (cursor >= size) {
                 throw new NoSuchElementException();
             }
             return get(lastReturnIndex = cursor++);
