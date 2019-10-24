@@ -14,6 +14,7 @@
     <modules>
         <module>hw01-maven</module>
         <module>hw02-DIYarrayList</module>
+        <module>hw03-gc</module>
     </modules>
 
     <packaging>pom</packaging>
