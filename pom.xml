@@ -29,6 +29,7 @@
         <maven.compiler.release>${java.version}</maven.compiler.release>
         <!-- endregion -->
         <com.google.guava.version>28.1-jre</com.google.guava.version>
+        <jmh-core.version>1.21</jmh-core.version>
     </properties>
 
     <dependencyManagement>

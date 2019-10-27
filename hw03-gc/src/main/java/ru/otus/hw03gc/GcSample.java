@@ -1,6 +1,11 @@
 package ru.otus.hw03gc;
 
 import com.sun.management.GarbageCollectionNotificationInfo;
+import org.openjdk.jmh.annotations.*;
+import org.openjdk.jmh.runner.Runner;
+import org.openjdk.jmh.runner.RunnerException;
+import org.openjdk.jmh.runner.options.Options;
+import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import javax.management.NotificationEmitter;
 import javax.management.NotificationListener;
@@ -10,21 +15,34 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
+@State(value = Scope.Thread)
+@BenchmarkMode(Mode.SingleShotTime)
+@OutputTimeUnit(TimeUnit.MILLISECONDS)
 public class GcSample {
 
-    public static void main(String... args) throws Exception {
-        final Map<String, GcStatistic> gcStatisticMap = new HashMap<>();
+    final Map<String, GcStatistic> gcStatisticMap = new HashMap<>();
 
+    public static void main(String[] args) throws RunnerException {
+        Options opt = new OptionsBuilder().include(GcSample.class.getSimpleName()).forks(1).build();
+        new Runner(opt).run();
+    }
+
+    @Setup
+    public void setup() {
         switchOnMonitoring(gcStatisticMap);
+    }
 
+    @Benchmark
+    public void testConfiguredGc() throws InterruptedException {
         List<Long> list = new ArrayList<>();
         while (true) {
             Thread.sleep(1);
-            list.addAll(LongStream.range(1, 100).boxed().collect(Collectors.toList()));
-            list.removeIf(aLong -> aLong > 50);
+            list.addAll(LongStream.range(1, 8000).boxed().collect(Collectors.toList()));
+            list.removeIf(aLong -> aLong > 4000);
         }
     }
 
