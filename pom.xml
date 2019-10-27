@@ -14,6 +14,7 @@
     <modules>
         <module>hw01-maven</module>
         <module>hw02-DIYarrayList</module>
+        <module>hw03-gc</module>
     </modules>
 
     <packaging>pom</packaging>
@@ -28,6 +29,7 @@
         <maven.compiler.release>${java.version}</maven.compiler.release>
         <!-- endregion -->
         <com.google.guava.version>28.1-jre</com.google.guava.version>
+        <jmh-core.version>1.21</jmh-core.version>
     </properties>
 
     <dependencyManagement>
