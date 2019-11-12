@@ -8,7 +8,12 @@ public class Demo {
 
     public void action() {
         TestLogin testLogin = IoC.getTestLogin();
+        testLogin.calculation(3);
+        testLogin.calculation2(3);
         testLogin.calculation(6);
+        testLogin.calculation2(6);
+        testLogin.calculation(9);
+        testLogin.calculation2(9);
     }
 }
 
