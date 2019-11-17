@@ -16,6 +16,7 @@
         <module>hw02-DIYarrayList</module>
         <module>hw03-gc</module>
         <module>hw04-dynamicProxy</module>
+        <module>hw05-annotations</module>
     </modules>
 
     <packaging>pom</packaging>
