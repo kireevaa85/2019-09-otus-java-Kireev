@@ -6,8 +6,7 @@ import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Set;
 
-import static ru.otus.hw05Annotations.myTestFramework.util.ReflectionHelper.fillMethodsMap;
-import static ru.otus.hw05Annotations.myTestFramework.util.ReflectionHelper.invokeMethods;
+import static ru.otus.hw05Annotations.myTestFramework.util.ReflectionHelper.*;
 
 public class Runner {
 
@@ -33,35 +32,34 @@ public class Runner {
                 instance = defConstructor.newInstance();
                 try {
                     invokeMethods(map.get(BEFORE_EACH), instance);
-                    try {
-                        method.invoke(instance);
-                        result.append("\t").append(method.getName()).append(" - done.\n");
-                        doneCount++;
-                    } catch (InvocationTargetException e) {
-                        result.append("\t").append(method.getName()).append(" - fail. ").append(e.getTargetException().getMessage()).append("\n");
-                    }
+                    doneCount = invokeCurrentTest(method, instance, result) ? doneCount + 1 : doneCount;
                 } catch (Exception e) {
                     result.append(e.getMessage()).append("\n");
                 } finally {
-                    try {
-                        invokeMethods(map.get(AFTER_EACH), instance);
-                    } catch (Exception e) {
-                        result.append(e.getMessage()).append("\n");
-                    }
+                    invokeMethods(map.get(AFTER_EACH), instance, result);
                 }
             }
         } catch (Exception e) {
             result.append(e.getMessage()).append("\n");
         } finally {
-            try {
-                invokeMethods(map.get(AFTER_ALL), null);
-            } catch (Exception e) {
-                result.append(e.getMessage()).append("\n");
-            }
+            invokeMethods(map.get(AFTER_ALL), null, result);
         }
 
         result.insert(0, className + ": test count " + map.get(TEST).size() + ", done " + doneCount + ", fail " + (map.get(TEST).size() - doneCount) + "\n");
         return result.toString();
+    }
+
+    private static boolean invokeCurrentTest(Method method, Object instance, StringBuilder result) {
+        try {
+            method.invoke(instance);
+            result.append("\t").append(method.getName()).append(" - done.\n");
+            return true;
+        } catch (InvocationTargetException e) {
+            result.append("\t").append(method.getName()).append(" - fail. ").append(e.getTargetException().getMessage()).append("\n");
+        } catch (IllegalAccessException e) {
+            result.append("\t").append(method.getName()).append(" - fail. ").append(e.getMessage()).append("\n");
+        }
+        return false;
     }
 
 }

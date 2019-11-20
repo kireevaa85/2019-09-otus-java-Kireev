@@ -36,9 +36,9 @@ public final class ReflectionHelper {
         return result;
     }
 
-    public static void invokeMethods(Set<Method> eachSet, Object instance) throws Exception {
+    public static void invokeMethods(Set<Method> methods, Object instance) throws Exception {
         StringBuilder errMessage = new StringBuilder();
-        for (Method method : eachSet) {
+        for (Method method : methods) {
             try {
                 method.invoke(instance);
             } catch (Exception e) {
@@ -47,6 +47,14 @@ public final class ReflectionHelper {
         }
         if (errMessage.length() > 0) {
             throw new Exception(errMessage.toString());
+        }
+    }
+
+    public static void invokeMethods(Set<Method> methods, Object instance, StringBuilder result) {
+        try {
+            invokeMethods(methods, instance);
+        } catch (Exception e) {
+            result.append(e.getMessage()).append("\n");
         }
     }
 
