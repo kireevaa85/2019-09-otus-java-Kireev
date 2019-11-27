@@ -1,0 +1,69 @@
+package ru.otus.hw06Bankomat.cassette;
+
+import ru.otus.hw06Bankomat.Banknote;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class CassetteImpl implements Cassette {
+    private final Banknote nominal;
+    private final int maxCount;
+    private int count;
+
+    public CassetteImpl(Banknote nominal, int maxCount) {
+        this(nominal, maxCount, 0);
+    }
+
+    public CassetteImpl(Banknote nominal, int maxCount, int count) {
+        if (nominal == null) {
+            throw new IllegalArgumentException("nominal can't be null");
+        }
+        if (maxCount <= 0) {
+            throw new IllegalArgumentException("maxCount can't be negative or zero");
+        }
+        this.nominal = nominal;
+        this.maxCount = maxCount;
+        this.count = count;
+    }
+
+    @Override
+    public Banknote nominal() {
+        return nominal;
+    }
+
+    @Override
+    public int maxCount() {
+        return maxCount;
+    }
+
+    @Override
+    public void putBanknotes(List<Banknote> banknotes) throws NominalCassetteException, MaxSizeCassetteException {
+        if (banknotes == null) return;
+        if (banknotes.size() + count > maxCount) {
+            throw new MaxSizeCassetteException("Can't put all banknotes, the cassette for nominal " + nominal + " is fully");
+        }
+        for (Banknote banknote : banknotes) {
+            if (banknote != nominal) {
+                throw new NominalCassetteException("Can't put banknote " + banknote + " to the cassete for banknote nominal=" + nominal);
+            }
+        }
+    }
+
+    @Override
+    public List<Banknote> getBanknotes(int count) throws InsufficientAmountCassetteException {
+        if (count > this.count) {
+            throw new InsufficientAmountCassetteException("The cassette with nominal " + nominal + " have not " + count + " banknotes");
+        }
+        List<Banknote> result = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            result.add(nominal);
+        }
+        this.count -= count;
+        return result;
+    }
+
+    @Override
+    public int count() {
+        return count;
+    }
+}
