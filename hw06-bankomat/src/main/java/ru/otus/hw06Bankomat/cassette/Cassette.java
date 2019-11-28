@@ -8,12 +8,12 @@ public interface Cassette {
 
     Banknote nominal();
 
-    int maxCount();
-
-    void putBanknotes(List<Banknote> banknotes) throws NominalCassetteException, MaxSizeCassetteException;
+    void putBanknotes(int count) throws MaxSizeCassetteException;
 
     List<Banknote> getBanknotes(int count) throws InsufficientAmountCassetteException;
 
     int count();
+
+    boolean noPlace(int addCount);
 
 }

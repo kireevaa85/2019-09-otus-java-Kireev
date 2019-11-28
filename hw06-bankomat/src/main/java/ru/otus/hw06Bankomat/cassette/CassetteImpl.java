@@ -32,20 +32,9 @@ public class CassetteImpl implements Cassette {
     }
 
     @Override
-    public int maxCount() {
-        return maxCount;
-    }
-
-    @Override
-    public void putBanknotes(List<Banknote> banknotes) throws NominalCassetteException, MaxSizeCassetteException {
-        if (banknotes == null) return;
-        if (banknotes.size() + count > maxCount) {
+    public void putBanknotes(int count) throws MaxSizeCassetteException {
+        if (noPlace(count)) {
             throw new MaxSizeCassetteException("Can't put all banknotes, the cassette for nominal " + nominal + " is fully");
-        }
-        for (Banknote banknote : banknotes) {
-            if (banknote != nominal) {
-                throw new NominalCassetteException("Can't put banknote " + banknote + " to the cassete for banknote nominal=" + nominal);
-            }
         }
     }
 
@@ -65,5 +54,10 @@ public class CassetteImpl implements Cassette {
     @Override
     public int count() {
         return count;
+    }
+
+    @Override
+    public boolean noPlace(int addCount) {
+        return addCount + count > maxCount;
     }
 }

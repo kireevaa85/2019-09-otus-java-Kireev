@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface ATM {
 
-    void putBanknotes(List<Banknote> banknotes) throws NominalATMException;
+    void putBanknotes(List<Banknote> banknotes) throws NominalATMException, MaxSizeATMException;
 
-    List<Banknote> getMoney(int summ) throws Exception;
+    List<Banknote> getMoney(int summ) throws MoneySelectionATMException;
 
     int balance();
 
