@@ -42,25 +42,25 @@ public class ATMImpl implements ATM {
     }
 
     @Override
-    public List<Banknote> getMoney(int summ) throws MoneySelectionATMException {
-        if (summ <= 0) {
-            throw new IllegalArgumentException("The summ must not be zero or negative");
+    public List<Banknote> getMoney(int sum) throws MoneySelectionATMException {
+        if (sum <= 0) {
+            throw new IllegalArgumentException("The sum must not be zero or negative");
         }
         List<GetMoneyOperation> futureOperations = new ArrayList<>();
-        int otherSumm = summ;
+        int otherSum = sum;
         for (Banknote banknote : cassettes.keySet()) {
-            int count = otherSumm / cassettes.get(banknote).nominal().getNominal();
+            int count = otherSum / cassettes.get(banknote).nominal().getNominal();
             while (count != 0 && cassettes.get(banknote).noPlace(count)) {
                 count--;
             }
             if (count > 0) {
                 futureOperations.add(new GetMoneyOperation(banknote, count));
-                otherSumm -= count * banknote.getNominal();
+                otherSum -= count * banknote.getNominal();
             }
         }
 
-        if (otherSumm != 0) {
-            throw new MoneySelectionATMException("Sorry, i cant'n return this amount: " + summ);
+        if (otherSum != 0) {
+            throw new MoneySelectionATMException("Sorry, i cant'n return this amount: " + sum);
         }
 
         List<Banknote> result = new ArrayList<>();
