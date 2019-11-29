@@ -2,8 +2,7 @@ package ru.otus.hw06Bankomat.atm;
 
 import ru.otus.hw06Bankomat.Banknote;
 import ru.otus.hw06Bankomat.cassette.Cassette;
-import ru.otus.hw06Bankomat.cassette.InsufficientAmountCassetteException;
-import ru.otus.hw06Bankomat.cassette.MaxSizeCassetteException;
+import ru.otus.hw06Bankomat.cassette.CassetteException;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -11,38 +10,44 @@ import java.util.stream.Collectors;
 public class ATMImpl implements ATM {
     private final TreeMap<Banknote, Cassette> cassettes;
 
-    public ATMImpl(Set<Cassette> cassettesSet) {
-        if (cassettesSet == null || cassettesSet.isEmpty()) {
+    public ATMImpl(Collection<Cassette> cassettesList) {
+        if (cassettesList == null || cassettesList.isEmpty()) {
             throw new IllegalArgumentException("cassettes can't be null or empty");
         }
+        final Set<Banknote> banknotes = new HashSet<>();
+        cassettesList.forEach(cassette -> {
+            if (!banknotes.add(cassette.nominal())) {
+                throw new IllegalArgumentException("cassettes can't have duplicates by banknote");
+            }
+        });
         this.cassettes = new TreeMap<>((o1, o2) -> o2.getNominal() - o1.getNominal());
-        cassettesSet.forEach(cassette -> this.cassettes.put(cassette.nominal(), cassette));
+        cassettesList.forEach(cassette -> this.cassettes.put(cassette.nominal(), cassette));
     }
 
     @Override
-    public void putBanknotes(List<Banknote> banknotes) throws NominalATMException, MaxSizeATMException {
+    public void putBanknotes(List<Banknote> banknotes) throws ATMException {
         final Map<Banknote, Long> groupingBanknotes = banknotes.stream()
                 .collect(Collectors.groupingBy(banknote -> banknote, Collectors.counting()));
 
         if (!cassettes.keySet().containsAll(groupingBanknotes.keySet())) {
-            throw new NominalATMException("Please put suitable banknotes (look information on bankomat header)");
+            throw new ATMException("Please put suitable banknotes (look information on ATM header)");
         }
         if (groupingBanknotes.keySet().stream()
                 .anyMatch(banknote -> cassettes.get(banknote).noPlace(Math.toIntExact(groupingBanknotes.get(banknote))))) {
-            throw new MaxSizeATMException("Sorry, the ATM need technical support, please try later");
+            throw new ATMException("Sorry, the ATM need technical support, please try later");
         }
 
         groupingBanknotes.keySet().forEach(banknote -> {
             try {
                 cassettes.get(banknote).putBanknotes(Math.toIntExact(groupingBanknotes.get(banknote)));
-            } catch (MaxSizeCassetteException e) {
-                throw new RuntimeException();
+            } catch (CassetteException e) {
+                throw new RuntimeException(e);
             }
         });
     }
 
     @Override
-    public List<Banknote> getMoney(int sum) throws MoneySelectionATMException {
+    public List<Banknote> getMoney(int sum) throws ATMException {
         if (sum <= 0) {
             throw new IllegalArgumentException("The sum must not be zero or negative");
         }
@@ -60,15 +65,15 @@ public class ATMImpl implements ATM {
         }
 
         if (otherSum != 0) {
-            throw new MoneySelectionATMException("Sorry, i cant'n return this amount: " + sum);
+            throw new ATMException("Sorry, i cant'n return this amount: " + sum);
         }
 
         List<Banknote> result = new ArrayList<>();
         futureOperations.forEach(operation -> {
                     try {
                         result.addAll(cassettes.get(operation.banknote).getBanknotes(operation.count));
-                    } catch (InsufficientAmountCassetteException e) {
-                        throw new RuntimeException();
+                    } catch (CassetteException e) {
+                        throw new RuntimeException(e);
                     }
                 });
         return result;

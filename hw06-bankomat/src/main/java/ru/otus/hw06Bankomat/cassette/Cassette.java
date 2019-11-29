@@ -14,16 +14,16 @@ public interface Cassette {
 
     /**
      * @param count Count of banknotes for put in the current cassette
-     * @throws MaxSizeCassetteException If the current cassette haven't size for new count banknotes
+     * @throws CassetteException If the current cassette haven't size for new count banknotes
      */
-    void putBanknotes(int count) throws MaxSizeCassetteException;
+    void putBanknotes(int count) throws CassetteException;
 
     /**
      * @param count Count of banknotes for return
      * @return List of banknotes
-     * @throws InsufficientAmountCassetteException If the current cassette have not count banknotes
+     * @throws CassetteException If the current cassette have not count banknotes
      */
-    List<Banknote> getBanknotes(int count) throws InsufficientAmountCassetteException;
+    List<Banknote> getBanknotes(int count) throws CassetteException;
 
     /**
      * @return Return the count of banknotes on the current Cassette

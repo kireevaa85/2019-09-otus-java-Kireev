@@ -25,18 +25,18 @@ class CassetteImplTest {
     }
 
     @Test
-    void putBanknotes() throws MaxSizeCassetteException {
+    void putBanknotes() throws CassetteException {
         cassette.putBanknotes(MAX_COUNT);
         assertEquals(MAX_COUNT, cassette.count());
     }
 
     @Test
-    void putBanknotesMaxSizeCassetteException() {
-        assertThrows(MaxSizeCassetteException.class, () -> cassette.putBanknotes(MAX_COUNT + 1));
+    void putBanknotesCassetteException() {
+        assertThrows(CassetteException.class, () -> cassette.putBanknotes(MAX_COUNT + 1));
     }
 
     @Test
-    void getBanknotes() throws MaxSizeCassetteException, InsufficientAmountCassetteException {
+    void getBanknotes() throws CassetteException {
         cassette.putBanknotes(MAX_COUNT);
         List<Banknote> banknotes = cassette.getBanknotes(MAX_COUNT);
         assertEquals(MAX_COUNT, banknotes.size());
@@ -44,15 +44,15 @@ class CassetteImplTest {
     }
 
     @Test
-    void getBanknotesInsufficientAmountCassetteException() {
-        assertThrows(InsufficientAmountCassetteException.class, () -> {
+    void getBanknotesCassetteException() {
+        assertThrows(CassetteException.class, () -> {
             cassette.putBanknotes(MAX_COUNT);
             cassette.getBanknotes(MAX_COUNT + 1);
         });
     }
 
     @Test
-    void count() throws MaxSizeCassetteException, InsufficientAmountCassetteException {
+    void count() throws CassetteException {
         assertEquals(0, cassette.count());
         cassette.putBanknotes(MAX_COUNT);
         assertEquals(MAX_COUNT, cassette.count());

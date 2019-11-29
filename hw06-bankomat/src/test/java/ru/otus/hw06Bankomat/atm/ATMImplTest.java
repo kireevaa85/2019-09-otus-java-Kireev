@@ -23,7 +23,7 @@ class ATMImplTest {
 
     @BeforeEach
     void setUp() {
-        Set<Cassette> cassettes = new HashSet<>();
+        Collection<Cassette> cassettes = new ArrayList<>();
         cassettes.add(new CassetteImpl(Banknote.FIFTY, MAX_FIFTY));
         cassettes.add(new CassetteImpl(Banknote.ONE_HUNDRED, MAX_ONE_HUNDRED));
         cassettes.add(new CassetteImpl(Banknote.TWO_HUNDRED, MAX_TWO_HUNDRED));
@@ -37,7 +37,7 @@ class ATMImplTest {
     }
 
     @Test
-    void putBanknotes() throws MaxSizeATMException, NominalATMException {
+    void putBanknotes() throws ATMException {
         List<Banknote> banknotes = new ArrayList<>();
         addBanknotesToList(banknotes, Banknote.FIFTY, MAX_FIFTY);
         addBanknotesToList(banknotes, Banknote.ONE_HUNDRED, MAX_ONE_HUNDRED);
@@ -54,21 +54,21 @@ class ATMImplTest {
     }
 
     @Test
-    void putBanknotesMaxSizeATMException() {
+    void putBanknotesATMException() {
         List<Banknote> banknotes = new ArrayList<>();
         addBanknotesToList(banknotes, Banknote.ONE_HUNDRED, MAX_ONE_HUNDRED + 1);
-        assertThrows(MaxSizeATMException.class, () -> atm.putBanknotes(banknotes));
+        assertThrows(ATMException.class, () -> atm.putBanknotes(banknotes));
     }
 
     @Test
-    void putBanknotesNominalATMException() {
+    void putBanknotesATMException2() {
         List<Banknote> banknotes = new ArrayList<>();
         addBanknotesToList(banknotes, Banknote.TEN, 1);
-        assertThrows(NominalATMException.class, () -> atm.putBanknotes(banknotes));
+        assertThrows(ATMException.class, () -> atm.putBanknotes(banknotes));
     }
 
     @Test
-    void getMoney() throws MaxSizeATMException, NominalATMException, MoneySelectionATMException {
+    void getMoney() throws ATMException {
         List<Banknote> banknotes = new ArrayList<>();
         addBanknotesToList(banknotes, Banknote.FIFTY, MAX_FIFTY);
         addBanknotesToList(banknotes, Banknote.ONE_HUNDRED, MAX_ONE_HUNDRED);
@@ -89,16 +89,16 @@ class ATMImplTest {
     }
 
     @Test
-    void getMoneyMoneySelectionATMException() throws MaxSizeATMException, NominalATMException {
+    void getMoneyATMException() throws ATMException {
         List<Banknote> banknotes = new ArrayList<>();
         addBanknotesToList(banknotes, Banknote.ONE_HUNDRED, MAX_ONE_HUNDRED);
         addBanknotesToList(banknotes, Banknote.ONE_THOUSAND, MAX_ONE_THOUSAND);
         atm.putBanknotes(banknotes);
-        assertThrows(MoneySelectionATMException.class, () -> atm.getMoney(1950));
+        assertThrows(ATMException.class, () -> atm.getMoney(1950));
     }
 
     @Test
-    void balance() throws MaxSizeATMException, NominalATMException {
+    void balance() throws ATMException {
         assertEquals(0, atm.balance());
 
         List<Banknote> banknotes = new ArrayList<>();

@@ -32,17 +32,17 @@ public class CassetteImpl implements Cassette {
     }
 
     @Override
-    public void putBanknotes(int count) throws MaxSizeCassetteException {
+    public void putBanknotes(int count) throws CassetteException {
         if (noPlace(count)) {
-            throw new MaxSizeCassetteException("Can't put all banknotes, the cassette for nominal " + nominal + " is fully");
+            throw new CassetteException("Can't put all banknotes, the cassette for nominal " + nominal + " is fully");
         }
         this.count += count;
     }
 
     @Override
-    public List<Banknote> getBanknotes(int count) throws InsufficientAmountCassetteException {
+    public List<Banknote> getBanknotes(int count) throws CassetteException {
         if (count > this.count) {
-            throw new InsufficientAmountCassetteException("The cassette with nominal " + nominal + " have not " + count + " banknotes");
+            throw new CassetteException("The cassette with nominal " + nominal + " have not " + count + " banknotes");
         }
         List<Banknote> result = new ArrayList<>();
         for (int i = 0; i < count; i++) {
