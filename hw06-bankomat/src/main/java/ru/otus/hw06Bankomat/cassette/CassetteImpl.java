@@ -36,6 +36,7 @@ public class CassetteImpl implements Cassette {
         if (noPlace(count)) {
             throw new MaxSizeCassetteException("Can't put all banknotes, the cassette for nominal " + nominal + " is fully");
         }
+        this.count += count;
     }
 
     @Override

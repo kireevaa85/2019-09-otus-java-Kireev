@@ -1,0 +1,74 @@
+package ru.otus.hw06Bankomat.cassette;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import ru.otus.hw06Bankomat.Banknote;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class CassetteImplTest {
+
+    private final static Banknote BANKNOTE = Banknote.ONE_NUDRED;
+    private static final int MAX_COUNT = 10;
+    private Cassette cassette;
+
+    @BeforeEach
+    void setUp() {
+        cassette = new CassetteImpl(BANKNOTE, MAX_COUNT);
+    }
+
+    @AfterEach
+    void tearDown() {
+    }
+
+    @Test
+    void nominal() {
+        assertEquals(BANKNOTE, cassette.nominal());
+    }
+
+    @Test
+    void putBanknotes() throws MaxSizeCassetteException {
+        cassette.putBanknotes(MAX_COUNT);
+        assertEquals(MAX_COUNT, cassette.count());
+    }
+
+    @Test
+    void putBanknotesMaxSizeCassetteException() {
+        assertThrows(MaxSizeCassetteException.class, () -> cassette.putBanknotes(MAX_COUNT + 1));
+    }
+
+    @Test
+    void getBanknotes() throws MaxSizeCassetteException, InsufficientAmountCassetteException {
+        cassette.putBanknotes(MAX_COUNT);
+        List<Banknote> banknotes = cassette.getBanknotes(MAX_COUNT);
+        assertEquals(MAX_COUNT, banknotes.size());
+        assertTrue(banknotes.stream().allMatch(b -> b.equals(BANKNOTE)));
+    }
+
+    @Test
+    void getBanknotesInsufficientAmountCassetteException() {
+        assertThrows(InsufficientAmountCassetteException.class, () -> {
+            cassette.putBanknotes(MAX_COUNT);
+            cassette.getBanknotes(MAX_COUNT + 1);
+        });
+    }
+
+    @Test
+    void count() throws MaxSizeCassetteException, InsufficientAmountCassetteException {
+        assertEquals(0, cassette.count());
+        cassette.putBanknotes(MAX_COUNT);
+        assertEquals(MAX_COUNT, cassette.count());
+        cassette.getBanknotes(1);
+        assertEquals(MAX_COUNT - 1, cassette.count());
+    }
+
+    @Test
+    void noPlace() {
+        assertFalse(cassette.noPlace(MAX_COUNT - 1));
+        assertFalse(cassette.noPlace(MAX_COUNT));
+        assertTrue(cassette.noPlace(MAX_COUNT + 1));
+    }
+}
