@@ -50,7 +50,7 @@ public class ATMImpl implements ATM {
         int otherSum = sum;
         for (Banknote banknote : cassettes.keySet()) {
             int count = otherSum / cassettes.get(banknote).nominal().getNominal();
-            while (count != 0 && cassettes.get(banknote).noPlace(count)) {
+            while (count != 0 && cassettes.get(banknote).count() < count) {
                 count--;
             }
             if (count > 0) {

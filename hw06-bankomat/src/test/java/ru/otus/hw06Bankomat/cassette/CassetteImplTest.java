@@ -1,6 +1,5 @@
 package ru.otus.hw06Bankomat.cassette;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.otus.hw06Bankomat.Banknote;
@@ -11,17 +10,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CassetteImplTest {
 
-    private final static Banknote BANKNOTE = Banknote.ONE_NUDRED;
+    private final static Banknote BANKNOTE = Banknote.ONE_HUNDRED;
     private static final int MAX_COUNT = 10;
     private Cassette cassette;
 
     @BeforeEach
     void setUp() {
         cassette = new CassetteImpl(BANKNOTE, MAX_COUNT);
-    }
-
-    @AfterEach
-    void tearDown() {
     }
 
     @Test
