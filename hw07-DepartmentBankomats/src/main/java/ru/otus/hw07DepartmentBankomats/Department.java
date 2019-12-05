@@ -10,6 +10,6 @@ public interface Department {
 
     int balance();
 
-    void restore();
+    void restore() throws DepartmentException;
 
 }

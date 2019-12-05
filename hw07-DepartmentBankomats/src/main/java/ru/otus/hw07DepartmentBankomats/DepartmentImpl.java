@@ -1,13 +1,18 @@
 package ru.otus.hw07DepartmentBankomats;
 
-import ru.otus.hw06Bankomat.atm.ATM;
+import ru.otus.hw06Bankomat.atm.ATMException;
 import ru.otus.hw07DepartmentBankomats.atm.DepATM;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class DepartmentImpl implements Department {
-    private final Collection<DepATM> atmList = new ArrayList<>();
+    private final Collection<DepATM> atmList;
+
+    public DepartmentImpl(Collection<DepATM> atmList) {
+        this.atmList = atmList;
+    }
 
     @Override
     public void addATM(DepATM atm) {
@@ -21,12 +26,22 @@ public class DepartmentImpl implements Department {
 
     @Override
     public int balance() {
-        return atmList.stream().mapToInt(ATM::balance).sum();
+        return atmList.stream().mapToInt(DepATM::balance).sum();
     }
 
     @Override
-    public void restore() {
-        //// TODO: 05/12/2019
+    public void restore() throws DepartmentException {
+        List<String> uuidsNotRestored = new ArrayList<>();
+        atmList.forEach(depATM -> {
+            try {
+                depATM.restore();
+            } catch (ATMException e) {
+                uuidsNotRestored.add(depATM.uuid());
+            }
+        });
+        if (!uuidsNotRestored.isEmpty()) {
+            throw new DepartmentException("ATMs with uuids = {" + String.join(",", uuidsNotRestored) + "} not restored!");
+        }
     }
 
 }
