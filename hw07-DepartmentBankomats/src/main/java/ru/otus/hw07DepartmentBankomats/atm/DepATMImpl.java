@@ -81,6 +81,7 @@ public class DepATMImpl implements DepATM {
         Collection<Cassette> cassettesCollection = new ArrayList<>();
         for (CassetteImpl cassette : cassettes.values()) {
             Field fMaxCount = cassette.getClass().getDeclaredField("maxCount");
+            fMaxCount.setAccessible(true);
             cassettesCollection.add(new CassetteImpl(cassette.nominal(), (Integer) fMaxCount.get(cassette), cassette.count()));
         }
         return new ATMImpl(cassettesCollection);
