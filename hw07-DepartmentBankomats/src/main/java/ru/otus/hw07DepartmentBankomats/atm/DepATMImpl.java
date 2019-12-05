@@ -74,6 +74,7 @@ public class DepATMImpl implements DepATM {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private ATMImpl cloneATMImpl(ATMImpl src) throws NoSuchFieldException, IllegalAccessException {
         Field fCassette = src.getClass().getDeclaredField("cassettes");
         fCassette.setAccessible(true);

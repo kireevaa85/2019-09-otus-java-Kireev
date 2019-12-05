@@ -103,10 +103,8 @@ class DepartmentTest {
         assertEquals(29000, department.balance());
 
         //put/get money in any ATM
-        depATM7000.getMoney(1500);
-        assertEquals(29000 - 1500, department.balance());
         depATM9000.getMoney(900);
-        assertEquals(29000 - 1500 - 900, department.balance());
+        assertEquals(29000 - 900, department.balance());
 
         //Restore department ATMs and check balance
         department.restore();
