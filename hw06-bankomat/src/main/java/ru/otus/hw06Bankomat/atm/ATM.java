@@ -4,7 +4,7 @@ import ru.otus.hw06Bankomat.Banknote;
 
 import java.util.List;
 
-public interface ATM {
+public interface ATM extends ATMListener {
 
     /**
      * @param banknotes List of banknotes({@link Banknote}) for put in the current cassette
@@ -31,8 +31,4 @@ public interface ATM {
      */
     String uuid();
 
-    /**
-     * Restores the ATM to its original state
-     */
-    void restore();
 }
