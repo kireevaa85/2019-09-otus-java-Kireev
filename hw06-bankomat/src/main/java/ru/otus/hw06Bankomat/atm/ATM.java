@@ -26,4 +26,13 @@ public interface ATM {
      */
     int balance();
 
+    /**
+     * @return Retutn unique UUID for current ATM
+     */
+    String uuid();
+
+    /**
+     * Restores the ATM to its original state
+     */
+    void restore();
 }

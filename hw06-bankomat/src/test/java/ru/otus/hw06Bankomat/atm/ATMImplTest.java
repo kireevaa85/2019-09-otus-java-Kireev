@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.otus.hw06Bankomat.Banknote;
 import ru.otus.hw06Bankomat.cassette.Cassette;
+import ru.otus.hw06Bankomat.cassette.CassetteException;
 import ru.otus.hw06Bankomat.cassette.CassetteImpl;
 
 import java.util.*;
@@ -105,6 +106,29 @@ class ATMImplTest {
         addBanknotesToList(banknotes, Banknote.ONE_HUNDRED, MAX_ONE_HUNDRED);
         addBanknotesToList(banknotes, Banknote.ONE_THOUSAND, 1);
         atm.putBanknotes(banknotes);
+        assertEquals(Banknote.ONE_HUNDRED.getNominal() * MAX_ONE_HUNDRED + Banknote.ONE_THOUSAND.getNominal(), atm.balance());
+    }
+
+    @Test
+    void uuid() {
+        assertNotNull(atm.uuid());
+    }
+
+    @Test
+    void restore() throws ATMException, CassetteException {
+        Collection<Cassette> cassettes = new ArrayList<>();
+        Cassette cassetteOneHundred = new CassetteImpl(Banknote.ONE_HUNDRED, MAX_ONE_HUNDRED);
+        cassetteOneHundred.putBanknotes(MAX_ONE_HUNDRED);
+        cassettes.add(cassetteOneHundred);
+        Cassette cassetteOneThousand = new CassetteImpl(Banknote.ONE_THOUSAND, MAX_ONE_THOUSAND);
+        cassetteOneThousand.putBanknotes(1);
+        cassettes.add(cassetteOneThousand);
+        atm = new ATMImpl(cassettes);
+
+        assertEquals(Banknote.ONE_HUNDRED.getNominal() * MAX_ONE_HUNDRED + Banknote.ONE_THOUSAND.getNominal(), atm.balance());
+        atm.getMoney(1100);
+        assertEquals(Banknote.ONE_HUNDRED.getNominal() * (MAX_ONE_HUNDRED - 1), atm.balance());
+        atm.restore();
         assertEquals(Banknote.ONE_HUNDRED.getNominal() * MAX_ONE_HUNDRED + Banknote.ONE_THOUSAND.getNominal(), atm.balance());
     }
 

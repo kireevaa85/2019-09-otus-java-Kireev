@@ -1,29 +1,28 @@
 package ru.otus.hw07DepartmentBankomats;
 
-import ru.otus.hw07DepartmentBankomats.atm.DepATM;
+import ru.otus.hw06Bankomat.atm.ATM;
 
 public interface Department {
 
     /**
-     * @param atm DepATM for add to the current department
+     * @param atm ATM for add to the current department
      */
-    void addATM(DepATM atm);
+    void addATM(ATM atm);
 
     /**
-     * @param atm DepATM for remove to the current department
+     * @param atm ATM for remove to the current department
      * @return {@code true} if an element was removed as a result of this call
      */
-    boolean removeATM(DepATM atm);
+    boolean removeATM(ATM atm);
 
     /**
-     * @return Sum of all DepATMs balance
+     * @return Sum of all ATMs balance
      */
     int balance();
 
     /**
      * Restores the all department ATMs to its original state
-     * @throws DepartmentException If to restore the current department failed
      */
-    void restore() throws DepartmentException;
+    void restore();
 
 }

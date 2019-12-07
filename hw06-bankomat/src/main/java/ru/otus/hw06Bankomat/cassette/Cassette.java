@@ -26,6 +26,11 @@ public interface Cassette {
     List<Banknote> getBanknotes(int count) throws CassetteException;
 
     /**
+     * @return maxCount banknotes for the cassette
+     */
+    int maxCount();
+
+    /**
      * @return Return the count of banknotes on the current Cassette
      */
     int count();
