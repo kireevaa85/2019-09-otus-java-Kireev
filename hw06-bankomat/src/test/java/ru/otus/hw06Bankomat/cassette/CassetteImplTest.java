@@ -66,4 +66,9 @@ class CassetteImplTest {
         assertFalse(cassette.noPlace(MAX_COUNT));
         assertTrue(cassette.noPlace(MAX_COUNT + 1));
     }
+
+    @Test
+    void maxCount() {
+        assertEquals(MAX_COUNT, cassette.maxCount());
+    }
 }

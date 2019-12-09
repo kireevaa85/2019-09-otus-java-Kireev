@@ -53,6 +53,11 @@ public class CassetteImpl implements Cassette {
     }
 
     @Override
+    public int maxCount() {
+        return maxCount;
+    }
+
+    @Override
     public int count() {
         return count;
     }

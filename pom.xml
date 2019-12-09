@@ -18,6 +18,7 @@
         <module>hw04-dynamicProxy</module>
         <module>hw05-annotations</module>
         <module>hw06-bankomat</module>
+        <module>hw07-DepartmentBankomats</module>
     </modules>
 
     <packaging>pom</packaging>
