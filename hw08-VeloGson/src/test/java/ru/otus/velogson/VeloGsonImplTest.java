@@ -54,6 +54,7 @@ class DemoClass extends DemoClassFather {
     private int[] array = {1, 2, 3, 4, 5};
     private Car[] arrayObjEmpty = {};
     private Car[] arrayObj = {new Car(160, "Lada Kalina"), null, new Car(220, "VW Polo")};
+    private Car[] arrayObjNull = null;
 
     private List<Car> garageEmptyList = Collections.emptyList();
     private Set<Car> garageEmptySet = Collections.emptySet();
