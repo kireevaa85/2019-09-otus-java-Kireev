@@ -7,6 +7,7 @@ import javax.json.JsonObjectBuilder;
 import javax.lang.model.type.ArrayType;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -18,7 +19,7 @@ public class VeloGsonImpl implements VeloGson {
     @Override
     public String toJson(Object src) throws IllegalAccessException {
         if (src == null) {
-            return null;
+            return "null";
         }
         var objectBuilder = Json.createObjectBuilder();
         var fields = src.getClass().getDeclaredFields();
@@ -30,12 +31,25 @@ public class VeloGsonImpl implements VeloGson {
     }
 
     private void constructJsonObject(JsonObjectBuilder objectBuilder, Field f, Object fValue) {
-        if (fValue == null) {
+        if (fValue == null || Modifier.isTransient(f.getModifiers())) {
             return;
         }
         Class<?> fType = f.getType();
         if (Collection.class.isAssignableFrom(fType)) {
+            JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
 
+
+            Object[] values = ((Collection) fValue).toArray();
+
+
+            for (Object object : values) {
+                var arrayObjectBuilder = Json.createObjectBuilder();
+                //constructJsonObject(arrayObjectBuilder, object.getClass(), object);
+                jsonArrayBuilder.add(arrayObjectBuilder);
+            }
+
+
+            objectBuilder.add(f.getName(), jsonArrayBuilder);
         } else if (Map.class.isAssignableFrom(fType)) {
 
         } else if (Object.class.isAssignableFrom(fType)) {
@@ -60,11 +74,11 @@ public class VeloGsonImpl implements VeloGson {
             } else if (fType.isArray()) {
                 JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
 
-                for (int i = 0; i < Array.getLength(fValue); i++) {
-                    var arrayObjectBuilder = Json.createObjectBuilder();
-                    constructJsonObject(arrayObjectBuilder, Field f, Object fValue);
-                    jsonArrayBuilder.add(arrayObjectBuilder);
-                }
+//                for (int i = 0; i < Array.getLength(fValue); i++) {
+//                    var arrayObjectBuilder = Json.createObjectBuilder();
+//                    constructJsonObject(arrayObjectBuilder, Field f, Object fValue);
+//                    jsonArrayBuilder.add(arrayObjectBuilder);
+//                }
 
                 objectBuilder.add(f.getName(), jsonArrayBuilder);
             }

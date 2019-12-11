@@ -24,8 +24,12 @@ class VeloGsonImplTest {
 
     @Test
     void toJson() throws IOException, IllegalAccessException {
-        assertEquals(gson.toJson(objSrc), veloGson.toJson(objSrc));
         assertEquals(gson.toJson(null), veloGson.toJson(null));
+        assertEquals(gson.toJson(100), veloGson.toJson(100));
+        assertEquals(gson.toJson("100"), veloGson.toJson("100"));
+        assertEquals(gson.toJson(true), veloGson.toJson(true));
+        assertEquals(gson.toJson(Sex.WOMAN), veloGson.toJson(Sex.WOMAN));
+        assertEquals(gson.toJson(objSrc), veloGson.toJson(objSrc));
     }
 
 }
@@ -38,6 +42,7 @@ class DemoClass extends DemoClassFather {
     private byte fByte = -30;
     private char fChar = 31;
     private short fShort = -32;
+    private transient int fTransient = 33;
     private int age = 34;
     private Integer agrWrapper = 34;
     private String name = "MyName";
@@ -61,6 +66,7 @@ class DemoClass extends DemoClassFather {
     private Map<String, Car> garageEmptyMap = Collections.emptyMap();
     private Queue<Car> garageEmptyQueue = new ArrayDeque();
 
+    private List<String> stringList = Arrays.asList("first", "second", "third", "etc");
     private List<Car> garageList = Arrays.asList(new Car(260, "VW Passat"), null, new Car(280, "VW Tiguan"));
     private Set<Car> garageSet = Set.of(new Car(260, "VW Passat"), new Car(280, "VW Tiguan"));
     private Map<String, Car> garageMap = Map.of("1", new Car(160, "Lada Kalina"),
