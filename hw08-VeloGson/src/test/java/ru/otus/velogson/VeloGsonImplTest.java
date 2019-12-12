@@ -10,7 +10,6 @@ import java.math.BigInteger;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 class VeloGsonImplTest {
     private Gson gson = new Gson();
@@ -25,14 +24,6 @@ class VeloGsonImplTest {
     @Test
     void toJson() throws IOException, IllegalAccessException {
         assertEquals(gson.toJson(objSrc), veloGson.toJson(objSrc));
-        //Array
-        //Collection
-        //Map
-        assertEquals(gson.toJson(Sex.WOMAN), veloGson.toJson(Sex.WOMAN));
-        assertEquals(gson.toJson(null), veloGson.toJson(null));
-        assertEquals(gson.toJson(100), veloGson.toJson(100));
-        assertEquals(gson.toJson("100"), veloGson.toJson("100"));
-        assertEquals(gson.toJson(true), veloGson.toJson(true));
     }
 
 }
