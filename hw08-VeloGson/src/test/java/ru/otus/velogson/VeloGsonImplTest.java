@@ -24,12 +24,15 @@ class VeloGsonImplTest {
 
     @Test
     void toJson() throws IOException, IllegalAccessException {
+        assertEquals(gson.toJson(objSrc), veloGson.toJson(objSrc));
+        //Array
+        //Collection
+        //Map
+        assertEquals(gson.toJson(Sex.WOMAN), veloGson.toJson(Sex.WOMAN));
         assertEquals(gson.toJson(null), veloGson.toJson(null));
         assertEquals(gson.toJson(100), veloGson.toJson(100));
         assertEquals(gson.toJson("100"), veloGson.toJson("100"));
         assertEquals(gson.toJson(true), veloGson.toJson(true));
-        assertEquals(gson.toJson(Sex.WOMAN), veloGson.toJson(Sex.WOMAN));
-        assertEquals(gson.toJson(objSrc), veloGson.toJson(objSrc));
     }
 
 }
@@ -55,8 +58,12 @@ class DemoClass extends DemoClassFather {
 
     private Sex fEnum = Sex.MAN;
 
+    private Car carNull = null;
+    private Car carObj = new Car(320, "Nissan Skyline");
+
     private int[] arrayEmpty = {};
-    private int[] array = {1, 2, 3, 4, 5};
+    private int[] arrayNumbers = {1, 2, 3, 4, 5};
+    private String[] arrayStrings = {"1", "2", "3", "4", "5"};
     private Car[] arrayObjEmpty = {};
     private Car[] arrayObj = {new Car(160, "Lada Kalina"), null, new Car(220, "VW Polo")};
     private Car[] arrayObjNull = null;
@@ -72,6 +79,9 @@ class DemoClass extends DemoClassFather {
     private Map<String, Car> garageMap = Map.of("1", new Car(160, "Lada Kalina"),
             "2", new Car(220, "VW Polo"),
             "3", new Car(260, "VW Passat"));
+    private Map<Car, String> garageMapInversion = Map.of(new Car(160, "Lada Kalina"), "1",
+            new Car(220, "VW Polo"), "2",
+            new Car(260, "VW Passat"), "3");
     private Queue<Car> garageQueue = new ArrayDeque();
 
     public DemoClass() {
@@ -89,6 +99,19 @@ class Car {
     Car(int maxSpeed, String name) {
         this.maxSpeed = maxSpeed;
         this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Car car = (Car) o;
+        return name.equals(car.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 }
 

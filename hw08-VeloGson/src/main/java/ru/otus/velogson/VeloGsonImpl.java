@@ -1,16 +1,11 @@
 package ru.otus.velogson;
 
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObjectBuilder;
-import javax.lang.model.type.ArrayType;
+import javax.json.*;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
@@ -21,84 +16,146 @@ public class VeloGsonImpl implements VeloGson {
         if (src == null) {
             return "null";
         }
+        return toJsonObjectBuilder(src).build().toString();
+    }
+
+    private JsonObjectBuilder toJsonObjectBuilder(Object src) throws IllegalAccessException {
         var objectBuilder = Json.createObjectBuilder();
         var fields = src.getClass().getDeclaredFields();
         for (Field f : fields) {
             f.setAccessible(true);
-            constructJsonObject(objectBuilder, f, f.get(src));
+            Object fValue = f.get(src);
+            if (fValue == null || Modifier.isTransient(f.getModifiers())) {
+                continue;
+            }
+            fillJsonObjectBuilder(objectBuilder, f.getName(), f.getType(), fValue);
         }
-        return objectBuilder.build().toString();
+        return objectBuilder;
     }
 
-    private void constructJsonObject(JsonObjectBuilder objectBuilder, Field f, Object fValue) {
-        if (fValue == null || Modifier.isTransient(f.getModifiers())) {
-            return;
+    private JsonObjectBuilder toJsonMapBuilder(Object fValue) throws IllegalAccessException {
+        var objectBuilder = Json.createObjectBuilder();
+        for (Object key : ((Map) fValue).keySet()) {
+            Object value = ((Map) fValue).get(key);
+            fillJsonObjectBuilder(objectBuilder, key.toString(), value.getClass(), value);
         }
-        Class<?> fType = f.getType();
-        if (Collection.class.isAssignableFrom(fType)) {
-            JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
+        return objectBuilder;
+    }
 
+    private JsonArrayBuilder toJsonArrayBuilder(Collection fCollection) throws IllegalAccessException {
+        return toJsonArrayBuilder(fCollection.toArray());
+    }
 
-            Object[] values = ((Collection) fValue).toArray();
-
-
-            for (Object object : values) {
-                var arrayObjectBuilder = Json.createObjectBuilder();
-                //constructJsonObject(arrayObjectBuilder, object.getClass(), object);
-                jsonArrayBuilder.add(arrayObjectBuilder);
+    private JsonArrayBuilder toJsonArrayBuilder(Object fArray) throws IllegalAccessException {
+        var jsonArrayBuilder = Json.createArrayBuilder();
+        int length = Array.getLength(fArray);
+        for (int i = 0; i < length; i++) {
+            Object value = Array.get(fArray, i);
+            if (value == null) {
+                jsonArrayBuilder.addNull();
+            } else {
+                fillJsonArrayBuilder(jsonArrayBuilder, value.getClass(), value);
             }
+        }
+        return jsonArrayBuilder;
+    }
 
-
-            objectBuilder.add(f.getName(), jsonArrayBuilder);
+    private void fillJsonObjectBuilder(JsonObjectBuilder builder, String fName, Class<?> fType, Object fValue) throws IllegalAccessException {
+        if (Collection.class.isAssignableFrom(fType)) {
+            builder.add(fName, toJsonArrayBuilder((Collection) fValue));
         } else if (Map.class.isAssignableFrom(fType)) {
-
+            builder.add(fName, toJsonMapBuilder(fValue));
         } else if (Object.class.isAssignableFrom(fType)) {
             if (String.class.isAssignableFrom(fType)) {
-                objectBuilder.add(f.getName(), (String) fValue);
+                builder.add(fName, (String) fValue);
             } else if (BigInteger.class.isAssignableFrom(fType)) {
-                objectBuilder.add(f.getName(), (BigInteger) fValue);
+                builder.add(fName, (BigInteger) fValue);
             } else if (BigDecimal.class.isAssignableFrom(fType)) {
-                objectBuilder.add(f.getName(), (BigDecimal) fValue);
+                builder.add(fName, (BigDecimal) fValue);
             } else if (Integer.class.isAssignableFrom(fType)) {
-                objectBuilder.add(f.getName(), (Integer) fValue);
+                builder.add(fName, (Integer) fValue);
             } else if (Long.class.isAssignableFrom(fType)) {
-                objectBuilder.add(f.getName(), (Long) fValue);
+                builder.add(fName, (Long) fValue);
             } else if (Float.class.isAssignableFrom(fType)) {
-                objectBuilder.add(f.getName(), (Float) fValue);
+                builder.add(fName, (Float) fValue);
             } else if (Double.class.isAssignableFrom(fType)) {
-                objectBuilder.add(f.getName(), (Double) fValue);
+                builder.add(fName, (Double) fValue);
             } else if (Boolean.class.isAssignableFrom(fType)) {
-                objectBuilder.add(f.getName(), (Boolean) fValue);
+                builder.add(fName, (Boolean) fValue);
             } else if (Enum.class.isAssignableFrom(fType)) {
-                objectBuilder.add(f.getName(), fValue.toString());
+                builder.add(fName, fValue.toString());
             } else if (fType.isArray()) {
-                JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
-
-//                for (int i = 0; i < Array.getLength(fValue); i++) {
-//                    var arrayObjectBuilder = Json.createObjectBuilder();
-//                    constructJsonObject(arrayObjectBuilder, Field f, Object fValue);
-//                    jsonArrayBuilder.add(arrayObjectBuilder);
-//                }
-
-                objectBuilder.add(f.getName(), jsonArrayBuilder);
+                builder.add(fName, toJsonArrayBuilder(fValue));
+            } else {
+                builder.add(fName, toJsonObjectBuilder(fValue));
             }
         } else if (fType.isPrimitive()) {
             if (byte.class.isAssignableFrom(fType)) {
-                objectBuilder.add(f.getName(), (byte) fValue);
+                builder.add(fName, (byte) fValue);
             } else if (char.class.isAssignableFrom(fType)) {
-                objectBuilder.add(f.getName(), String.valueOf((char) fValue));
+                builder.add(fName, String.valueOf((char) fValue));
             } else if (short.class.isAssignableFrom(fType)) {
-                objectBuilder.add(f.getName(), (short) fValue);
+                builder.add(fName, (short) fValue);
             } else if (int.class.isAssignableFrom(fType)) {
-                objectBuilder.add(f.getName(), (int) fValue);
+                builder.add(fName, (int) fValue);
             } else if (long.class.isAssignableFrom(fType)) {
-                objectBuilder.add(f.getName(), (long) fValue);
+                builder.add(fName, (long) fValue);
             } else if (float.class.isAssignableFrom(fType)) {
-                objectBuilder.add(f.getName(), (float) fValue);
+                builder.add(fName, (float) fValue);
             } else if (double.class.isAssignableFrom(fType)) {
-                objectBuilder.add(f.getName(), (double) fValue);
+                builder.add(fName, (double) fValue);
             } else if (boolean.class.isAssignableFrom(fType)) {
-                objectBuilder.add(f.getName(), (boolean) fValue);
+                builder.add(fName, (boolean) fValue);
+            }
+        }
+    }
+
+    private void fillJsonArrayBuilder(JsonArrayBuilder builder, Class<?> fType, Object fValue) throws IllegalAccessException {
+        if (Collection.class.isAssignableFrom(fType)) {
+            builder.add(toJsonArrayBuilder((Collection) fValue));
+        } else if (Map.class.isAssignableFrom(fType)) {
+            builder.add(toJsonMapBuilder(fValue));
+        } else if (Object.class.isAssignableFrom(fType)) {
+            if (String.class.isAssignableFrom(fType)) {
+                builder.add((String) fValue);
+            } else if (BigInteger.class.isAssignableFrom(fType)) {
+                builder.add((BigInteger) fValue);
+            } else if (BigDecimal.class.isAssignableFrom(fType)) {
+                builder.add((BigDecimal) fValue);
+            } else if (Integer.class.isAssignableFrom(fType)) {
+                builder.add((Integer) fValue);
+            } else if (Long.class.isAssignableFrom(fType)) {
+                builder.add((Long) fValue);
+            } else if (Float.class.isAssignableFrom(fType)) {
+                builder.add((Float) fValue);
+            } else if (Double.class.isAssignableFrom(fType)) {
+                builder.add((Double) fValue);
+            } else if (Boolean.class.isAssignableFrom(fType)) {
+                builder.add((Boolean) fValue);
+            } else if (Enum.class.isAssignableFrom(fType)) {
+                builder.add(fValue.toString());
+            } else if (fType.isArray()) {
+                builder.add(toJsonArrayBuilder(fValue));
+            } else {
+                builder.add(toJsonObjectBuilder(fValue));
+            }
+        } else if (fType.isPrimitive()) {
+            if (byte.class.isAssignableFrom(fType)) {
+                builder.add((byte) fValue);
+            } else if (char.class.isAssignableFrom(fType)) {
+                builder.add(String.valueOf((char) fValue));
+            } else if (short.class.isAssignableFrom(fType)) {
+                builder.add((short) fValue);
+            } else if (int.class.isAssignableFrom(fType)) {
+                builder.add((int) fValue);
+            } else if (long.class.isAssignableFrom(fType)) {
+                builder.add((long) fValue);
+            } else if (float.class.isAssignableFrom(fType)) {
+                builder.add((float) fValue);
+            } else if (double.class.isAssignableFrom(fType)) {
+                builder.add((double) fValue);
+            } else if (boolean.class.isAssignableFrom(fType)) {
+                builder.add((boolean) fValue);
             }
         }
     }
