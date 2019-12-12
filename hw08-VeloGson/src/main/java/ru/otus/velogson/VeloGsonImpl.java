@@ -21,14 +21,18 @@ public class VeloGsonImpl implements VeloGson {
 
     private JsonObjectBuilder toJsonObjectBuilder(Object src) throws IllegalAccessException {
         var objectBuilder = Json.createObjectBuilder();
-        var fields = src.getClass().getDeclaredFields();
-        for (Field f : fields) {
-            f.setAccessible(true);
-            Object fValue = f.get(src);
-            if (fValue == null || Modifier.isTransient(f.getModifiers())) {
-                continue;
+        Class<?> aClass = src.getClass();
+        while (!aClass.equals(Object.class)) {
+            var fields = aClass.getDeclaredFields();
+            for (Field f : fields) {
+                f.setAccessible(true);
+                Object fValue = f.get(src);
+                if (fValue == null || Modifier.isTransient(f.getModifiers())) {
+                    continue;
+                }
+                fillJsonObjectBuilder(objectBuilder, f.getName(), f.getType(), fValue);
             }
-            fillJsonObjectBuilder(objectBuilder, f.getName(), f.getType(), fValue);
+            aClass = aClass.getSuperclass();
         }
         return objectBuilder;
     }
