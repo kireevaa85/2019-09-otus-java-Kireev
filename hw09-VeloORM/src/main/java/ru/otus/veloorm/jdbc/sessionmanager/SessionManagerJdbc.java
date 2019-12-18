@@ -1,6 +1,5 @@
 package ru.otus.veloorm.jdbc.sessionmanager;
 
-import ru.otus.veloorm.api.sessionmanager.DatabaseSession;
 import ru.otus.veloorm.api.sessionmanager.SessionManager;
 import ru.otus.veloorm.api.sessionmanager.SessionManagerException;
 

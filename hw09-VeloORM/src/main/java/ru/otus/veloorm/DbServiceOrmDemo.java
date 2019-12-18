@@ -17,35 +17,35 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Optional;
 
-public class DbServiceDemo {
-    private static Logger logger = LoggerFactory.getLogger(DbServiceDemo.class);
+public class DbServiceOrmDemo {
+    private static Logger logger = LoggerFactory.getLogger(DbServiceOrmDemo.class);
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws SQLException {
         DataSource dataSource = new DataSourceH2();
-        DbServiceDemo demo = new DbServiceDemo();
+        DbServiceOrmDemo dbServiceOrmDemo = new DbServiceOrmDemo();
 
-        demo.createTable(dataSource);
+        dbServiceOrmDemo.createTable(dataSource);
 
         SessionManagerJdbc sessionManager = new SessionManagerJdbc(dataSource);
         DbExecutor<User> dbExecutor = new DbExecutor<>();
         UserDao userDao = new UserDaoJdbc(sessionManager, dbExecutor);
         DBServiceUser dbServiceUser = new DBServiceUserImpl(userDao);
-        long id = dbServiceUser.saveUser(new User(0, "dbServiceUser"));
-        Optional<User> user = dbServiceUser.getUser(id);
 
+        long id = dbServiceUser.saveUser(new User(0, "dbServiceUser", 18));
+        Optional<User> user = dbServiceUser.getUser(id);
         System.out.println(user);
         user.ifPresentOrElse(
                 crUser -> logger.info("created user, name:{}", crUser.getName()),
                 () -> logger.info("user was not created")
         );
-
     }
 
     private void createTable(DataSource dataSource) throws SQLException {
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement pst = connection.prepareStatement("create table user(id long auto_increment, name varchar(50))")) {
+             PreparedStatement pst = connection.prepareStatement("create table user(id bigint(20) NOT NULL auto_increment, name varchar(255), age int(3))")) {
             pst.executeUpdate();
         }
         System.out.println("table created");
     }
+
 }

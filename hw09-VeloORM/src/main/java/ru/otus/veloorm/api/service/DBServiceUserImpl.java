@@ -49,4 +49,37 @@ public class DBServiceUserImpl implements DBServiceUser {
             return Optional.empty();
         }
     }
+
+    @Override
+    public void updateUser(User user) {
+        try (SessionManager sessionManager = userDao.getSessionManager()) {
+            sessionManager.beginSession();
+            try {
+                userDao.updateUser(user);
+                sessionManager.commitSession();
+                logger.info("updated user: {}", user.getId());
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+                sessionManager.rollbackSession();
+                throw new DBServiceException(e);
+            }
+        }
+    }
+
+    @Override
+    public long saveOrUpdateUser(User user) {
+        try (SessionManager sessionManager = userDao.getSessionManager()) {
+            sessionManager.beginSession();
+            try {
+                var userId = userDao.saveOrUpdateUser(user);
+                sessionManager.commitSession();
+                logger.info("createdOrUpdated user: {}", userId);
+                return userId;
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+                sessionManager.rollbackSession();
+                throw new DBServiceException(e);
+            }
+        }
+    }
 }

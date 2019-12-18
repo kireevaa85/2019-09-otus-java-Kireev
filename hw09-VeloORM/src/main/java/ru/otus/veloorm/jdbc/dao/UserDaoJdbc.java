@@ -55,6 +55,17 @@ public class UserDaoJdbc implements UserDao {
     }
 
     @Override
+    public void updateUser(User user) {
+        //// TODO: 18.12.2019
+    }
+
+    @Override
+    public long saveOrUpdateUser(User user) {
+        //// TODO: 18.12.2019
+        return 0;
+    }
+
+    @Override
     public SessionManager getSessionManager() {
         return sessionManager;
     }
