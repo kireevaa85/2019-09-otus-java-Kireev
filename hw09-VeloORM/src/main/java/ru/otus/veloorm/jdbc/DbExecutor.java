@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
-public class DbExecutor<T> {
+public class DbExecutor {
     private static Logger logger = LoggerFactory.getLogger(DbExecutor.class);
 
     public long insertRecord(Connection connection, String sql, List<String> params) throws SQLException {
@@ -29,7 +29,7 @@ public class DbExecutor<T> {
         }
     }
 
-    public Optional<T> selectRecord(Connection connection, String sql, long id, Function<ResultSet, T> rsHandler) throws SQLException {
+    public <T> Optional<T> selectRecord(Connection connection, String sql, long id, Function<ResultSet, T> rsHandler) throws SQLException {
         try (PreparedStatement pst = connection.prepareStatement(sql)) {
             pst.setLong(1, id);
             try (ResultSet rs = pst.executeQuery()) {

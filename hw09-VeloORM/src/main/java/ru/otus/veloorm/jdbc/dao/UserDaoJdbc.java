@@ -6,38 +6,28 @@ import ru.otus.veloorm.api.dao.UserDao;
 import ru.otus.veloorm.api.dao.UserDaoException;
 import ru.otus.veloorm.api.model.User;
 import ru.otus.veloorm.api.sessionmanager.SessionManager;
-import ru.otus.veloorm.jdbc.DbExecutor;
 import ru.otus.veloorm.jdbc.sessionmanager.SessionManagerJdbc;
+import ru.otus.veloorm.orm.JdbcTemplate;
+import ru.otus.veloorm.orm.JdbcTemplateImpl;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.Collections;
 import java.util.Optional;
 
 public class UserDaoJdbc implements UserDao {
     private static Logger logger = LoggerFactory.getLogger(UserDaoJdbc.class);
 
     private final SessionManagerJdbc sessionManager;
-    private final DbExecutor<User> dbExecutor;
+    private final JdbcTemplate jdbcTemplate;
 
-    public UserDaoJdbc(SessionManagerJdbc sessionManager, DbExecutor<User> dbExecutor) {
+    public UserDaoJdbc(SessionManagerJdbc sessionManager) {
         this.sessionManager = sessionManager;
-        this.dbExecutor = dbExecutor;
+        this.jdbcTemplate = new JdbcTemplateImpl(sessionManager);
     }
 
     @Override
     public Optional<User> findById(long id) {
         try {
-            return dbExecutor.selectRecord(getConnection(), "select id, name from user where id  = ?", id, resultSet -> {
-                try {
-                    if (resultSet.next()) {
-                        return new User(resultSet.getLong("id"), resultSet.getString("name"));
-                    }
-                } catch (SQLException e) {
-                    logger.error(e.getMessage(), e);
-                }
-                return null;
-            });
+            var user = jdbcTemplate.load(id, User.class);
+            return Optional.ofNullable(user);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -47,7 +37,7 @@ public class UserDaoJdbc implements UserDao {
     @Override
     public long saveUser(User user) {
         try {
-            return dbExecutor.insertRecord(getConnection(), "insert into user(name) values (?)", Collections.singletonList(user.getName()));
+            return jdbcTemplate.create(user);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new UserDaoException(e);
@@ -56,13 +46,12 @@ public class UserDaoJdbc implements UserDao {
 
     @Override
     public void updateUser(User user) {
-        //// TODO: 18.12.2019
-    }
-
-    @Override
-    public long saveOrUpdateUser(User user) {
-        //// TODO: 18.12.2019
-        return 0;
+        try {
+            jdbcTemplate.update(user);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new UserDaoException(e);
+        }
     }
 
     @Override
@@ -70,7 +59,4 @@ public class UserDaoJdbc implements UserDao {
         return sessionManager;
     }
 
-    private Connection getConnection() {
-        return sessionManager.getCurrentSession().getConnection();
-    }
 }

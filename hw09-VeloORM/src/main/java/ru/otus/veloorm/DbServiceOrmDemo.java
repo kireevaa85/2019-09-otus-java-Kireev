@@ -7,7 +7,6 @@ import ru.otus.veloorm.api.model.User;
 import ru.otus.veloorm.api.service.DBServiceUser;
 import ru.otus.veloorm.api.service.DBServiceUserImpl;
 import ru.otus.veloorm.h2.DataSourceH2;
-import ru.otus.veloorm.jdbc.DbExecutor;
 import ru.otus.veloorm.jdbc.dao.UserDaoJdbc;
 import ru.otus.veloorm.jdbc.sessionmanager.SessionManagerJdbc;
 
@@ -27,8 +26,7 @@ public class DbServiceOrmDemo {
         dbServiceOrmDemo.createTable(dataSource);
 
         SessionManagerJdbc sessionManager = new SessionManagerJdbc(dataSource);
-        DbExecutor<User> dbExecutor = new DbExecutor<>();
-        UserDao userDao = new UserDaoJdbc(sessionManager, dbExecutor);
+        UserDao userDao = new UserDaoJdbc(sessionManager);
         DBServiceUser dbServiceUser = new DBServiceUserImpl(userDao);
 
         long id = dbServiceUser.saveUser(new User(0, "dbServiceUser", 18));
@@ -37,6 +35,13 @@ public class DbServiceOrmDemo {
         user.ifPresentOrElse(
                 crUser -> logger.info("created user, name:{}", crUser.getName()),
                 () -> logger.info("user was not created")
+        );
+
+        dbServiceUser.updateUser(new User(0, "dbServiceUserNEW", 36));
+        user = dbServiceUser.getUser(id);
+        user.ifPresentOrElse(
+                crUser -> logger.info("UPDATED user:" + crUser),
+                () -> logger.info("user was not updated")
         );
     }
 

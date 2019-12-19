@@ -12,6 +12,4 @@ public interface DBServiceUser {
 
     void updateUser(User user);
 
-    long saveOrUpdateUser(User user);
-
 }
