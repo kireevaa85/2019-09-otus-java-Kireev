@@ -8,12 +8,13 @@ import ru.otus.veloorm.jdbc.sessionmanager.SessionManagerJdbc;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class JdbcTemplateImpl implements JdbcTemplate {
     private static Logger logger = LoggerFactory.getLogger(JdbcTemplateImpl.class);
+
+    private static final Map<String, String> createSqlCache = new HashMap<>();
+    private static final Map<String, String> loadSqlCache = new HashMap<>();
 
     private final SessionManagerJdbc sessionManager;
     private final DbExecutor dbExecutor;
@@ -28,10 +29,7 @@ public class JdbcTemplateImpl implements JdbcTemplate {
         try {
             EntityValueDesc entityValueDesc = EntityHelper.parse(objectData);
             return dbExecutor.insertRecord(getConnection(),
-                    "insert into " +
-                            entityValueDesc.getEntityDesc().getClassName() +
-                            "(" + String.join(", ", entityValueDesc.getEntityDesc().getColumnNames()) + ")" +
-                            " values (" + "?" + " ,?".repeat(entityValueDesc.getEntityDesc().getColumnNames().size() - 1) + ")",
+                    getCreateSql(objectData.getClass().getName(), entityValueDesc),
                     entityValueDesc.getColumnValues());
         } catch (NoSuchFieldException | IllegalAccessException | SQLException e) {
             logger.error(e.getMessage(), e);
@@ -43,9 +41,7 @@ public class JdbcTemplateImpl implements JdbcTemplate {
     public <T> T load(long id, Class<T> clazz) {
         EntityDesc entityDesc = EntityHelper.parse(clazz);
         try {
-            String columns = entityDesc.getPkColumnName() + ", " + String.join(", ", entityDesc.getColumnNames());
-            var result = dbExecutor.selectRecord(getConnection(), "select " + columns + " from " +
-                    entityDesc.getClassName() + " where " + entityDesc.getPkColumnName() + "  = ?", id, resultSet -> {
+            var result = dbExecutor.selectRecord(getConnection(), getLoadSql(clazz.getName(), entityDesc), id, resultSet -> {
                 try {
                     if (resultSet.next()) {
                         return EntityHelper.deserialize(resultSet, clazz, entityDesc);
@@ -89,6 +85,28 @@ public class JdbcTemplateImpl implements JdbcTemplate {
             setters.add(columnNames.get(i) + " = '" + columnValues.get(i) + "'");
         }
         return String.join(", ", setters);
+    }
+
+    private String getCreateSql(String className, EntityValueDesc entityValueDesc) {
+        if (createSqlCache.containsKey(className)) {
+            return createSqlCache.get(className);
+        }
+        String result = "insert into " + entityValueDesc.getEntityDesc().getClassName() +
+                "(" + String.join(", ", entityValueDesc.getEntityDesc().getColumnNames()) + ")" +
+                " values (" + "?" + " ,?".repeat(entityValueDesc.getEntityDesc().getColumnNames().size() - 1) + ")";
+        createSqlCache.put(className, result);
+        return createSqlCache.get(className);
+    }
+
+    private String getLoadSql(String className, EntityDesc entityDesc) {
+        if (loadSqlCache.containsKey(className)) {
+            return loadSqlCache.get(className);
+        }
+        String result = "select " + entityDesc.getPkColumnName() + ", " + String.join(", ",
+                entityDesc.getColumnNames()) + " from " + entityDesc.getClassName() +
+                " where " + entityDesc.getPkColumnName() + "  = ?";
+        loadSqlCache.put(className, result);
+        return loadSqlCache.get(className);
     }
 
     private Connection getConnection() {

@@ -3,33 +3,27 @@ package ru.otus.veloorm.orm;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EntityDesc {
-    private String className;
-    private List<String> columnNames = new ArrayList<>();
-    private String pkColumnName;
+public final class EntityDesc {
+    private final String className;
+    private final List<String> columnNames;
+    private final String pkColumnName;
+
+    public EntityDesc(String className, List<String> columnNames, String pkColumnName) {
+        this.className = className;
+        this.columnNames = List.copyOf(columnNames != null ? columnNames : new ArrayList<>());
+        this.pkColumnName = pkColumnName;
+    }
 
     public String getClassName() {
         return className;
     }
 
-    public void setClassName(String className) {
-        this.className = className;
-    }
-
     public List<String> getColumnNames() {
-        return columnNames;
-    }
-
-    public void setColumnNames(List<String> columnNames) {
-        this.columnNames = columnNames;
+        return List.copyOf(columnNames);
     }
 
     public String getPkColumnName() {
         return pkColumnName;
-    }
-
-    public void setPkColumnName(String pkColumnName) {
-        this.pkColumnName = pkColumnName;
     }
 
 }

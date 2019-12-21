@@ -5,38 +5,50 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public final class EntityHelper {
 
+    private static final Map<String, EntityDesc> entityDescCache = new HashMap<>();
+
     public static EntityDesc parse(Class clazz) {
-        EntityDesc result = new EntityDesc();
-        result.setClassName(clazz.getSimpleName());
+        if (entityDescCache.containsKey(clazz.getName())) {
+            return entityDescCache.get(clazz.getName());
+        }
+        String pkColumnName = null;
+        List<String> columnNames = new ArrayList<>();
         var fields = clazz.getDeclaredFields();
         for (Field f : fields) {
             if (Modifier.isTransient(f.getModifiers())) {
                 continue;
             }
             if (f.getDeclaredAnnotation(Id.class) != null) {
-                result.setPkColumnName(f.getName());
+                pkColumnName = f.getName();
                 continue;
             }
-            result.getColumnNames().add(f.getName());
+            columnNames.add(f.getName());
         }
-        return result;
+        entityDescCache.put(clazz.getName(), new EntityDesc(clazz.getSimpleName(), columnNames, pkColumnName));
+        return entityDescCache.get(clazz.getName());
     }
 
     public static <T> EntityValueDesc parse(T objectData) throws NoSuchFieldException, IllegalAccessException {
         Class<?> aClass = objectData.getClass();
-        EntityValueDesc result = new EntityValueDesc(parse(aClass));
-        for (String fName : result.getEntityDesc().getColumnNames()) {
+        EntityDesc entityDesc = parse(aClass);
+        List<String> columnValues = new ArrayList<>();
+        String pkValue;
+        for (String fName : entityDesc.getColumnNames()) {
             var f = aClass.getDeclaredField(fName);
             f.setAccessible(true);
-            result.getColumnValues().add(f.get(objectData).toString());
+            columnValues.add(f.get(objectData).toString());
         }
-        var pkField = aClass.getDeclaredField(result.getEntityDesc().getPkColumnName());
+        var pkField = aClass.getDeclaredField(entityDesc.getPkColumnName());
         pkField.setAccessible(true);
-        result.setPkValue(pkField.get(objectData).toString());
-        return result;
+        pkValue = pkField.get(objectData).toString();
+        return new EntityValueDesc(entityDesc, pkValue, columnValues);
     }
 
     public static <T> T deserialize(ResultSet resultSet, Class<T> clazz, EntityDesc entityDesc) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchFieldException, SQLException {
