@@ -43,7 +43,7 @@ public class JdbcTemplateImpl implements JdbcTemplate {
     public <T> T load(long id, Class<T> clazz) {
         EntityDesc entityDesc = EntityHelper.parse(clazz);
         try {
-            String columns = String.join(", ", entityDesc.getColumnNames());
+            String columns = entityDesc.getPkColumnName() + ", " + String.join(", ", entityDesc.getColumnNames());
             var result = dbExecutor.selectRecord(getConnection(), "select " + columns + " from " +
                     entityDesc.getClassName() + " where " + entityDesc.getPkColumnName() + "  = ?", id, resultSet -> {
                 try {

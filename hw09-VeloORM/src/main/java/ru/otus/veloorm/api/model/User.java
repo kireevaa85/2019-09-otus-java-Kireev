@@ -17,6 +17,10 @@ public class User {
         this.age = age;
     }
 
+    public User(String name, int age) {
+        this(0, name, age);
+    }
+
     public long getId() {
         return id;
     }

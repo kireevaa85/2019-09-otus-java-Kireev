@@ -35,7 +35,7 @@ public class DbServiceOrmDemo2 {
         AccountDao accountDao = new AccountDaoJdbc(sessionManager);
         DBServiceAccount dbServiceAccount = new DBServiceAccountImpl(accountDao);
 
-        long id = dbServiceAccount.saveAccount(new Account(0, "dbServiceAccount", new BigDecimal(1800)));
+        long id = dbServiceAccount.saveAccount(new Account("dbServiceAccount", new BigDecimal(1800)));
         Optional<Account> account = dbServiceAccount.getAccount(id);
         System.out.println(account);
         account.ifPresentOrElse(
@@ -43,7 +43,7 @@ public class DbServiceOrmDemo2 {
                 () -> logger.info("account was not created")
         );
 
-        dbServiceAccount.updateAccount(new Account(0, "dbServiceAccountNEW", new BigDecimal(3600)));
+        dbServiceAccount.updateAccount(new Account(id, "dbServiceAccountNEW", new BigDecimal(3600)));
         account = dbServiceAccount.getAccount(id);
         account.ifPresentOrElse(
                 crAccount -> logger.info("UPDATED account:" + crAccount),

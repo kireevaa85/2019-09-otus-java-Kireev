@@ -29,7 +29,7 @@ public class DbServiceOrmDemo {
         UserDao userDao = new UserDaoJdbc(sessionManager);
         DBServiceUser dbServiceUser = new DBServiceUserImpl(userDao);
 
-        long id = dbServiceUser.saveUser(new User(0, "dbServiceUser", 18));
+        long id = dbServiceUser.saveUser(new User("dbServiceUser", 18));
         Optional<User> user = dbServiceUser.getUser(id);
         System.out.println(user);
         user.ifPresentOrElse(
@@ -37,7 +37,7 @@ public class DbServiceOrmDemo {
                 () -> logger.info("user was not created")
         );
 
-        dbServiceUser.updateUser(new User(0, "dbServiceUserNEW", 36));
+        dbServiceUser.updateUser(new User(id, "dbServiceUserNEW", 36));
         user = dbServiceUser.getUser(id);
         user.ifPresentOrElse(
                 crUser -> logger.info("UPDATED user:" + crUser),

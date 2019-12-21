@@ -19,6 +19,10 @@ public class Account {
         this.rest = rest;
     }
 
+    public Account(String type, BigDecimal rest) {
+        this(0, type, rest);
+    }
+
     public long getNo() {
         return no;
     }

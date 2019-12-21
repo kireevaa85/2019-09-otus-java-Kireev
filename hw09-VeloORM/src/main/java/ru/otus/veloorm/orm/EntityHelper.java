@@ -16,10 +16,11 @@ public final class EntityHelper {
             if (Modifier.isTransient(f.getModifiers())) {
                 continue;
             }
-            result.getColumnNames().add(f.getName());
             if (f.getDeclaredAnnotation(Id.class) != null) {
                 result.setPkColumnName(f.getName());
+                continue;
             }
+            result.getColumnNames().add(f.getName());
         }
         return result;
     }
@@ -31,10 +32,10 @@ public final class EntityHelper {
             var f = aClass.getDeclaredField(fName);
             f.setAccessible(true);
             result.getColumnValues().add(f.get(objectData).toString());
-            if (fName.equals(result.getEntityDesc().getPkColumnName())) {
-                result.setPkValue(f.get(objectData).toString());
-            }
         }
+        var pkField = aClass.getDeclaredField(result.getEntityDesc().getPkColumnName());
+        pkField.setAccessible(true);
+        result.setPkValue(pkField.get(objectData).toString());
         return result;
     }
 
@@ -42,7 +43,7 @@ public final class EntityHelper {
         var instance = clazz.getConstructor().newInstance();
         var fields = clazz.getDeclaredFields();
         for (Field f : fields) {
-            if (entityDesc.getColumnNames().contains(f.getName())) {
+            if (entityDesc.getColumnNames().contains(f.getName()) || entityDesc.getPkColumnName().equals(f.getName())) {
                 f.setAccessible(true);
                 f.set(instance, resultSet.getObject(f.getName()));
             }
