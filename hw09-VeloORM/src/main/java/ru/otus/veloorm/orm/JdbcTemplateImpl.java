@@ -13,8 +13,9 @@ import java.util.*;
 public class JdbcTemplateImpl implements JdbcTemplate {
     private static Logger logger = LoggerFactory.getLogger(JdbcTemplateImpl.class);
 
-    private static final Map<String, String> createSqlCache = new HashMap<>();
-    private static final Map<String, String> loadSqlCache = new HashMap<>();
+    private final EntityMetadataHolder entityMetadataHolder = new EntityMetadataHolder();
+    private final Map<String, String> createSqlCache = new HashMap<>();
+    private final Map<String, String> loadSqlCache = new HashMap<>();
 
     private final SessionManagerJdbc sessionManager;
     private final DbExecutor dbExecutor;
@@ -27,7 +28,7 @@ public class JdbcTemplateImpl implements JdbcTemplate {
     @Override
     public <T> long create(T objectData) {
         try {
-            EntityValueDesc entityValueDesc = EntityHelper.parse(objectData);
+            EntityValueDesc entityValueDesc = entityMetadataHolder.parse(objectData);
             return dbExecutor.insertRecord(getConnection(),
                     getCreateSql(objectData.getClass().getName(), entityValueDesc),
                     entityValueDesc.getColumnValues());
@@ -39,12 +40,12 @@ public class JdbcTemplateImpl implements JdbcTemplate {
 
     @Override
     public <T> T load(long id, Class<T> clazz) {
-        EntityDesc entityDesc = EntityHelper.parse(clazz);
+        EntityDesc entityDesc = entityMetadataHolder.parse(clazz);
         try {
             var result = dbExecutor.selectRecord(getConnection(), getLoadSql(clazz.getName(), entityDesc), id, resultSet -> {
                 try {
                     if (resultSet.next()) {
-                        return EntityHelper.deserialize(resultSet, clazz, entityDesc);
+                        return entityMetadataHolder.deserialize(resultSet, clazz, entityDesc);
                     }
                 } catch (SQLException | NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException | NoSuchFieldException e) {
                     logger.error(e.getMessage(), e);
@@ -63,7 +64,7 @@ public class JdbcTemplateImpl implements JdbcTemplate {
     @Override
     public <T> void update(T objectData) {
         try {
-            EntityValueDesc entityValueDesc = EntityHelper.parse(objectData);
+            EntityValueDesc entityValueDesc = entityMetadataHolder.parse(objectData);
             dbExecutor.insertRecord(getConnection(),
                     "update " +
                             entityValueDesc.getEntityDesc().getClassName() +

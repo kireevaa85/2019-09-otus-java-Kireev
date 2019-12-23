@@ -10,11 +10,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public final class EntityHelper {
+public class EntityMetadataHolder {
 
-    private static final Map<String, EntityDesc> entityDescCache = new HashMap<>();
+    private final Map<String, EntityDesc> entityDescCache = new HashMap<>();
 
-    public static EntityDesc parse(Class clazz) {
+    public EntityDesc parse(Class clazz) {
         if (entityDescCache.containsKey(clazz.getName())) {
             return entityDescCache.get(clazz.getName());
         }
@@ -35,7 +35,7 @@ public final class EntityHelper {
         return entityDescCache.get(clazz.getName());
     }
 
-    public static <T> EntityValueDesc parse(T objectData) throws NoSuchFieldException, IllegalAccessException {
+    public <T> EntityValueDesc parse(T objectData) throws NoSuchFieldException, IllegalAccessException {
         Class<?> aClass = objectData.getClass();
         EntityDesc entityDesc = parse(aClass);
         List<String> columnValues = new ArrayList<>();
@@ -51,7 +51,7 @@ public final class EntityHelper {
         return new EntityValueDesc(entityDesc, pkValue, columnValues);
     }
 
-    public static <T> T deserialize(ResultSet resultSet, Class<T> clazz, EntityDesc entityDesc) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchFieldException, SQLException {
+    public <T> T deserialize(ResultSet resultSet, Class<T> clazz, EntityDesc entityDesc) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchFieldException, SQLException {
         var instance = clazz.getConstructor().newInstance();
         var fields = clazz.getDeclaredFields();
         for (Field f : fields) {
