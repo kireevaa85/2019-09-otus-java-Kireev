@@ -1,6 +1,6 @@
-package ru.otus.hibernate.api.service;
+package ru.otus.api.service;
 
-import ru.otus.hibernate.api.model.User;
+import ru.otus.api.model.User;
 
 import java.util.Optional;
 

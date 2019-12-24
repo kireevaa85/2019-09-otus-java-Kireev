@@ -1,7 +1,7 @@
-package ru.otus.hibernate.api.dao;
+package ru.otus.api.dao;
 
-import ru.otus.hibernate.api.model.User;
-import ru.otus.hibernate.api.sessionmanager.SessionManager;
+import ru.otus.api.model.User;
+import ru.otus.api.sessionmanager.SessionManager;
 
 import java.util.Optional;
 
