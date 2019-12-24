@@ -11,6 +11,7 @@ hw06-bankomat - "Написать эмулятор АТМ (банкомата)"<
 hw07-DepartamentBankomats - "Написать приложение ATM Департамент"<br>
 hw08-VeloGson - "Cвой json object writer"<br>
 hw09-VeloORM - "Самодельный ORM"<br>
+hw10-Hibernate - "Использование Hibernate"<br>
 <br>
 
 Студент:<br>
