@@ -59,7 +59,11 @@ public class DBServiceUserImpl implements DBServiceUser {
             sessionManager.beginSession();
             try {
                 var user = userDao.findById(id);
-                logger.info("user: {}", user.orElse(null));
+                logger.info("user: {}", user.isPresent() ? user.get().getId() : null);
+                if (user.isPresent()) {
+                    user.get().getAddress().getStreet();
+                    user.get().getPhones().forEach(phoneDataSet -> phoneDataSet.getNumber());
+                }
                 return user;
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
