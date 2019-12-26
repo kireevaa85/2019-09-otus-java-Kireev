@@ -8,7 +8,6 @@ import ru.otus.veloorm.api.model.Account;
 import ru.otus.veloorm.api.sessionmanager.SessionManager;
 import ru.otus.veloorm.jdbc.sessionmanager.SessionManagerJdbc;
 import ru.otus.veloorm.orm.JdbcTemplate;
-import ru.otus.veloorm.orm.JdbcTemplateImpl;
 
 import java.util.Optional;
 
@@ -18,9 +17,9 @@ public class AccountDaoJdbc implements AccountDao {
     private final SessionManagerJdbc sessionManager;
     private final JdbcTemplate jdbcTemplate;
 
-    public AccountDaoJdbc(SessionManagerJdbc sessionManager) {
+    public AccountDaoJdbc(SessionManagerJdbc sessionManager, JdbcTemplate jdbcTemplate) {
         this.sessionManager = sessionManager;
-        this.jdbcTemplate = new JdbcTemplateImpl(sessionManager);
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override

@@ -7,8 +7,11 @@ import ru.otus.veloorm.api.model.User;
 import ru.otus.veloorm.api.service.DBServiceUser;
 import ru.otus.veloorm.api.service.DBServiceUserImpl;
 import ru.otus.veloorm.h2.DataSourceH2;
+import ru.otus.veloorm.jdbc.DbExecutor;
 import ru.otus.veloorm.jdbc.dao.UserDaoJdbc;
 import ru.otus.veloorm.jdbc.sessionmanager.SessionManagerJdbc;
+import ru.otus.veloorm.orm.EntityMetadataHolder;
+import ru.otus.veloorm.orm.JdbcTemplateImpl;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -26,7 +29,7 @@ public class DbServiceOrmDemo {
         dbServiceOrmDemo.createTable(dataSource);
 
         SessionManagerJdbc sessionManager = new SessionManagerJdbc(dataSource);
-        UserDao userDao = new UserDaoJdbc(sessionManager);
+        UserDao userDao = new UserDaoJdbc(sessionManager, new JdbcTemplateImpl(sessionManager, new DbExecutor(), new EntityMetadataHolder()));
         DBServiceUser dbServiceUser = new DBServiceUserImpl(userDao);
 
         long id = dbServiceUser.saveUser(new User("dbServiceUser", 18));

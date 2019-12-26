@@ -8,7 +8,6 @@ import ru.otus.veloorm.api.model.User;
 import ru.otus.veloorm.api.sessionmanager.SessionManager;
 import ru.otus.veloorm.jdbc.sessionmanager.SessionManagerJdbc;
 import ru.otus.veloorm.orm.JdbcTemplate;
-import ru.otus.veloorm.orm.JdbcTemplateImpl;
 
 import java.util.Optional;
 
@@ -18,9 +17,9 @@ public class UserDaoJdbc implements UserDao {
     private final SessionManagerJdbc sessionManager;
     private final JdbcTemplate jdbcTemplate;
 
-    public UserDaoJdbc(SessionManagerJdbc sessionManager) {
+    public UserDaoJdbc(SessionManagerJdbc sessionManager, JdbcTemplate jdbcTemplate) {
         this.sessionManager = sessionManager;
-        this.jdbcTemplate = new JdbcTemplateImpl(sessionManager);
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override

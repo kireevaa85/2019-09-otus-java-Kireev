@@ -3,17 +3,15 @@ package ru.otus.veloorm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.otus.veloorm.api.dao.AccountDao;
-import ru.otus.veloorm.api.dao.UserDao;
 import ru.otus.veloorm.api.model.Account;
-import ru.otus.veloorm.api.model.User;
 import ru.otus.veloorm.api.service.DBServiceAccount;
 import ru.otus.veloorm.api.service.DBServiceAccountImpl;
-import ru.otus.veloorm.api.service.DBServiceUser;
-import ru.otus.veloorm.api.service.DBServiceUserImpl;
 import ru.otus.veloorm.h2.DataSourceH2;
+import ru.otus.veloorm.jdbc.DbExecutor;
 import ru.otus.veloorm.jdbc.dao.AccountDaoJdbc;
-import ru.otus.veloorm.jdbc.dao.UserDaoJdbc;
 import ru.otus.veloorm.jdbc.sessionmanager.SessionManagerJdbc;
+import ru.otus.veloorm.orm.EntityMetadataHolder;
+import ru.otus.veloorm.orm.JdbcTemplateImpl;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
@@ -32,7 +30,7 @@ public class DbServiceOrmDemo2 {
         dbServiceOrmDemo2.createTable(dataSource);
 
         SessionManagerJdbc sessionManager = new SessionManagerJdbc(dataSource);
-        AccountDao accountDao = new AccountDaoJdbc(sessionManager);
+        AccountDao accountDao = new AccountDaoJdbc(sessionManager, new JdbcTemplateImpl(sessionManager, new DbExecutor(), new EntityMetadataHolder()));
         DBServiceAccount dbServiceAccount = new DBServiceAccountImpl(accountDao);
 
         long id = dbServiceAccount.saveAccount(new Account("dbServiceAccount", new BigDecimal(1800)));

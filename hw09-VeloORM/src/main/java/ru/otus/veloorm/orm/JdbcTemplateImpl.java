@@ -13,16 +13,17 @@ import java.util.*;
 public class JdbcTemplateImpl implements JdbcTemplate {
     private static Logger logger = LoggerFactory.getLogger(JdbcTemplateImpl.class);
 
-    private final EntityMetadataHolder entityMetadataHolder = new EntityMetadataHolder();
     private final Map<String, String> createSqlCache = new HashMap<>();
     private final Map<String, String> loadSqlCache = new HashMap<>();
 
     private final SessionManagerJdbc sessionManager;
     private final DbExecutor dbExecutor;
+    private final EntityMetadataHolder entityMetadataHolder;
 
-    public JdbcTemplateImpl(SessionManagerJdbc sessionManager) {
+    public JdbcTemplateImpl(SessionManagerJdbc sessionManager, DbExecutor dbExecutor, EntityMetadataHolder entityMetadataHolder) {
         this.sessionManager = sessionManager;
-        this.dbExecutor = new DbExecutor();
+        this.dbExecutor = dbExecutor;
+        this.entityMetadataHolder = entityMetadataHolder;
     }
 
     @Override
