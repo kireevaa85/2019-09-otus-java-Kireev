@@ -3,9 +3,12 @@ package ru.otus.api.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.otus.api.dao.UserDao;
+import ru.otus.api.model.AddressDataSet;
+import ru.otus.api.model.PhoneDataSet;
 import ru.otus.api.model.User;
 import ru.otus.api.sessionmanager.SessionManager;
 
+import java.util.List;
 import java.util.Optional;
 
 public class DBServiceUserImpl implements DBServiceUser {
@@ -36,6 +39,22 @@ public class DBServiceUserImpl implements DBServiceUser {
 
     @Override
     public Optional<User> getUser(long id) {
+        try (SessionManager sessionManager = userDao.getSessionManager()) {
+            sessionManager.beginSession();
+            try {
+                var user = userDao.findById(id);
+                logger.info("user: {}", user.isPresent() ? user.get().getId() : null);
+                return user;
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+                sessionManager.rollbackSession();
+            }
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<User> getUserFullInfo(long id) {
         try (SessionManager sessionManager = userDao.getSessionManager()) {
             sessionManager.beginSession();
             try {

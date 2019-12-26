@@ -10,6 +10,8 @@ public interface DBServiceUser {
 
     Optional<User> getUser(long id);
 
+    Optional<User> getUserFullInfo(long id);
+
     void updateUser(User user);
 
 }

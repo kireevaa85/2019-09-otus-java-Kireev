@@ -30,7 +30,7 @@ public class DbServiceDemo {
         initialUser.addPhone(new PhoneDataSet("phoneNumber2"));
         initialUser.addPhone(new PhoneDataSet("phoneNumber3"));
         long id = dbServiceUser.saveUser(initialUser);
-        Optional<User> user = dbServiceUser.getUser(id);
+        Optional<User> user = dbServiceUser.getUserFullInfo(id);
         System.out.println(user);
         user.ifPresentOrElse(
                 crUser -> logger.info("created user, name:{}", crUser.getName()),
@@ -41,7 +41,7 @@ public class DbServiceDemo {
         userNEW.addPhone(new PhoneDataSet("phoneNumber4NEW"));
         userNEW.addPhone(new PhoneDataSet("phoneNumber5NEW"));
         dbServiceUser.updateUser(userNEW);
-        user = dbServiceUser.getUser(id);
+        user = dbServiceUser.getUserFullInfo(id);
         user.ifPresentOrElse(
                 crUser -> logger.info("UPDATED user:" + crUser),
                 () -> logger.info("user was not updated")

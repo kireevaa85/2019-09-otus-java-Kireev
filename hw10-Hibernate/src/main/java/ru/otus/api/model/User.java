@@ -18,11 +18,11 @@ public class User {
     @Column(name = "age")
     private int age;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id")
     private AddressDataSet address;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<PhoneDataSet> phones = new ArrayList<>();
 
     public User() {
@@ -75,6 +75,10 @@ public class User {
     public void removePhone(PhoneDataSet phone) {
         phones.remove(phone);
         phone.setUser(null);
+    }
+
+    public List<PhoneDataSet> getPhones() {
+        return phones;
     }
 
     @Override
