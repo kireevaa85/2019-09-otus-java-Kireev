@@ -22,7 +22,7 @@ public class User {
     @JoinColumn(name = "address_id")
     private AddressDataSet address;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<PhoneDataSet> phones = new ArrayList<>();
 
     public User() {
