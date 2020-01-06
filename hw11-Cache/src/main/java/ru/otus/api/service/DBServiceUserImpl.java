@@ -7,20 +7,21 @@ import ru.otus.api.model.User;
 import ru.otus.api.sessionmanager.SessionManager;
 import ru.otus.cachehw.HwCache;
 import ru.otus.cachehw.HwListener;
-import ru.otus.cachehw.MyCache;
 
 import java.util.Optional;
 
 public class DBServiceUserImpl implements DBServiceUser {
     private static Logger logger = LoggerFactory.getLogger(DBServiceUserImpl.class);
 
-    HwCache<Long, User> cache = new MyCache<>();
-    HwCache<Long, User> fullCache = new MyCache<>();
+    private final HwCache<Long, User> cache;
+    private final HwCache<Long, User> fullCache;
 
     private final UserDao userDao;
 
-    public DBServiceUserImpl(UserDao userDao) {
+    public DBServiceUserImpl(UserDao userDao, HwCache<Long, User> cache, HwCache<Long, User> fullCache) {
         this.userDao = userDao;
+        this.cache = cache;
+        this.fullCache = fullCache;
         HwListener<Long, User> listener =
                 (key, value, action) -> logger.info("key:{}, value:{}, action: {}", key, value, action);
         cache.addListener(listener);
@@ -49,10 +50,11 @@ public class DBServiceUserImpl implements DBServiceUser {
 
     @Override
     public Optional<User> getUser(long id) {
-        if (cache.get(id) != null) {
-            return Optional.of(cache.get(id));
+        Optional<User> user = Optional.ofNullable(cache.get(id));
+        if (user.isPresent()) {
+            return user;
         }
-        Optional<User> user = Optional.empty();
+
         try (SessionManager sessionManager = userDao.getSessionManager()) {
             sessionManager.beginSession();
             try {
@@ -69,10 +71,11 @@ public class DBServiceUserImpl implements DBServiceUser {
 
     @Override
     public Optional<User> getUserFullInfo(long id) {
-        if (fullCache.get(id) != null) {
-            return Optional.of(fullCache.get(id));
+        Optional<User> user = Optional.ofNullable(fullCache.get(id));
+        if (user.isPresent()) {
+            return user;
         }
-        Optional<User> user = Optional.empty();
+
         try (SessionManager sessionManager = userDao.getSessionManager()) {
             sessionManager.beginSession();
             try {

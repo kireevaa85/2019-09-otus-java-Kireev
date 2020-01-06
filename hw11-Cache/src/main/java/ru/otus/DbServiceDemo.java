@@ -9,6 +9,7 @@ import ru.otus.api.model.PhoneDataSet;
 import ru.otus.api.model.User;
 import ru.otus.api.service.DBServiceUser;
 import ru.otus.api.service.DBServiceUserImpl;
+import ru.otus.cachehw.MyCache;
 import ru.otus.hibernate.HibernateUtils;
 import ru.otus.hibernate.dao.UserDaoHibernate;
 import ru.otus.hibernate.sessionmanager.SessionManagerHibernate;
@@ -23,7 +24,7 @@ public class DbServiceDemo {
                 User.class, AddressDataSet.class, PhoneDataSet.class);
         SessionManagerHibernate sessionManager = new SessionManagerHibernate(sessionFactory);
         UserDao userDao = new UserDaoHibernate(sessionManager);
-        DBServiceUser dbServiceUser = new DBServiceUserImpl(userDao);
+        DBServiceUser dbServiceUser = new DBServiceUserImpl(userDao, new MyCache<>(), new MyCache<>());
 
         User initialUser = new User("dbServiceUser", 18, new AddressDataSet("street1"));
         initialUser.addPhone(new PhoneDataSet("phoneNumber1"));
@@ -42,6 +43,7 @@ public class DbServiceDemo {
         userNEW.addPhone(new PhoneDataSet("phoneNumber5NEW"));
         dbServiceUser.updateUser(userNEW);
         user = dbServiceUser.getUserFullInfo(id);
+        user = dbServiceUser.getUserFullInfo(id); //проверка взятия из кэша
         user.ifPresentOrElse(
                 crUser -> logger.info("UPDATED user:" + crUser),
                 () -> logger.info("user was not updated")
