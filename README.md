@@ -12,6 +12,7 @@ hw07-DepartamentBankomats - "Написать приложение ATM Депа�
 hw08-VeloGson - "Cвой json object writer"<br>
 hw09-VeloORM - "Самодельный ORM"<br>
 hw10-Hibernate - "Использование Hibernate"<br>
+hw11-Cache - "Свой cache engine"<br>
 <br>
 
 Студент:<br>
