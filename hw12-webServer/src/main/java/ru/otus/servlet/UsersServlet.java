@@ -1,6 +1,5 @@
 package ru.otus.servlet;
 
-import ru.otus.api.dao.UserDao;
 import ru.otus.api.service.DBServiceUser;
 import ru.otus.services.TemplateProcessor;
 

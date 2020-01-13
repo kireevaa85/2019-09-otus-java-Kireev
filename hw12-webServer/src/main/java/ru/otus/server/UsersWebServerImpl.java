@@ -109,7 +109,6 @@ public class UsersWebServerImpl implements UsersWebServer {
         Constraint constraint = new Constraint();
         constraint.setName(CONSTRAINT_NAME);
         constraint.setAuthenticate(true);
-        //constraint.setRoles(new String[]{ROLE_NAME_USER, ROLE_NAME_ADMIN});
         constraint.setRoles(new String[]{ROLE_NAME_ADMIN});
 
         List<ConstraintMapping> constraintMappings = new ArrayList<>();
