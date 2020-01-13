@@ -25,11 +25,11 @@ public class UsersApiServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        User user = dbServiceUser.getUser(extractIdFromRequest(request)).orElse(null);
+        User user = dbServiceUser.getUserFullInfo(extractIdFromRequest(request)).orElse(null);
 
         response.setContentType("application/json;charset=UTF-8");
         ServletOutputStream out = response.getOutputStream();
-        out.print(gson.toJson(user));
+        out.print(gson.toJson(user.toString()));
     }
 
     private long extractIdFromRequest(HttpServletRequest request) {
