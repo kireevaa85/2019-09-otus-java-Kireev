@@ -15,6 +15,7 @@ import org.eclipse.jetty.util.security.Constraint;
 import ru.otus.api.service.DBServiceUser;
 import ru.otus.helpers.FileSystemHelper;
 import ru.otus.services.TemplateProcessor;
+import ru.otus.servlet.UserServlet;
 import ru.otus.servlet.UsersServlet;
 
 import java.util.ArrayList;
@@ -85,6 +86,7 @@ public class UsersWebServerImpl implements UsersWebServer {
 
     private ServletContextHandler createServletContextHandler() {
         ServletContextHandler servletContextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        servletContextHandler.addServlet(new ServletHolder(new UserServlet(templateProcessor, dbServiceUser)), "/user");
         servletContextHandler.addServlet(new ServletHolder(new UsersServlet(templateProcessor, dbServiceUser)), "/users");
         return servletContextHandler;
     }
