@@ -1,7 +1,5 @@
 package ru.otus;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import org.eclipse.jetty.security.HashLoginService;
 import org.eclipse.jetty.security.LoginService;
 import org.hibernate.SessionFactory;
@@ -51,14 +49,12 @@ public class Main {
         String hashLoginServiceConfigPath = FileSystemHelper.localFileNameOrResourceNameToFullPath(HASH_LOGIN_SERVICE_CONFIG_NAME);
         LoginService loginServiceForBasicSecurity = new HashLoginService(REALM_NAME, hashLoginServiceConfigPath);
 
-        Gson gson = new GsonBuilder().serializeNulls().setPrettyPrinting().create();
         TemplateProcessor templateProcessor = new TemplateProcessorImpl(TEMPLATES_DIR);
 
         UsersWebServer usersWebServer = new UsersWebServerImpl(WEB_SERVER_PORT,
                 SecurityType.BASIC,
                 loginServiceForBasicSecurity,
                 dbServiceUser,
-                gson,
                 templateProcessor);
 
         usersWebServer.start();

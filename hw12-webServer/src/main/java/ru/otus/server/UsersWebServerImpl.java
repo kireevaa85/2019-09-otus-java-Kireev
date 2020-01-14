@@ -1,6 +1,5 @@
 package ru.otus.server;
 
-import com.google.gson.Gson;
 import org.eclipse.jetty.security.ConstraintMapping;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.LoginService;
@@ -16,7 +15,6 @@ import org.eclipse.jetty.util.security.Constraint;
 import ru.otus.api.service.DBServiceUser;
 import ru.otus.helpers.FileSystemHelper;
 import ru.otus.services.TemplateProcessor;
-import ru.otus.servlet.UsersApiServlet;
 import ru.otus.servlet.UsersServlet;
 
 import java.util.ArrayList;
@@ -33,20 +31,17 @@ public class UsersWebServerImpl implements UsersWebServer {
     private final SecurityType securityType;
     private final LoginService loginServiceForBasicSecurity;
     private final DBServiceUser dbServiceUser;
-    private final Gson gson;
     private final TemplateProcessor templateProcessor;
     private final Server server;
 
     public UsersWebServerImpl(int port, SecurityType securityType,
                               LoginService loginServiceForBasicSecurity,
                               DBServiceUser dbServiceUser,
-                              Gson gson,
                               TemplateProcessor templateProcessor) {
         this.port = port;
         this.securityType = securityType;
         this.loginServiceForBasicSecurity = loginServiceForBasicSecurity;
         this.dbServiceUser = dbServiceUser;
-        this.gson = gson;
         this.templateProcessor = templateProcessor;
         server = initContext();
     }
@@ -91,7 +86,6 @@ public class UsersWebServerImpl implements UsersWebServer {
     private ServletContextHandler createServletContextHandler() {
         ServletContextHandler servletContextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
         servletContextHandler.addServlet(new ServletHolder(new UsersServlet(templateProcessor, dbServiceUser)), "/users");
-        servletContextHandler.addServlet(new ServletHolder(new UsersApiServlet(dbServiceUser, gson)), "/api/user/*");
         return servletContextHandler;
     }
 
