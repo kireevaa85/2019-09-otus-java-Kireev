@@ -95,7 +95,7 @@ public class UsersWebServerImpl implements UsersWebServer {
         if (securityType == SecurityType.NONE) {
             return servletContextHandler;
         } else if (securityType == SecurityType.BASIC) {
-            return createBasicAuthSecurityHandler(servletContextHandler, "/users", "/api/user/*");
+            return createBasicAuthSecurityHandler(servletContextHandler, "/users", "/user");
         } else {
             throw new InvalidSecurityTypeException(securityType);
         }

@@ -4,21 +4,12 @@
 </head>
 
 <body>
-<h4>Создать пользователя</h4>
+    <h4>Создать пользователя</h4>
 
-<table style="width: 400px">
-    <thead>
-    <tr>
-        <td style="width: 50px">Id</td>
-        <td style="width: 150px">Имя</td>
-        <td style="width: 100px">Возраст</td>
-        <td style="width: 350px">Адрес</td>
-        <td style="width: 500px">Телефоны</td>
-    </tr>
-    </thead>
-    <tbody>
-    ${users}
-    </tbody>
-</table>
+    <form action="/user" method="post">
+        <input type="text" name="name" placeholder="Введите имя" required/>
+        <input type="number" name="age" placeholder="Введите возраст" required/>
+        <input type="submit" name="create" value="Создать пользователя">
+    </form>
 </body>
 </html>
