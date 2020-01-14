@@ -13,7 +13,7 @@ public interface DBServiceUser {
 
     Optional<User> getUserFullInfo(long id);
 
-    List<User> getAllUsersFullInfo();
+    List<User> getAllUsers();
 
     void updateUser(User user);
 

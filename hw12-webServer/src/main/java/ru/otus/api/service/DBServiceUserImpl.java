@@ -73,15 +73,12 @@ public class DBServiceUserImpl implements DBServiceUser {
     }
 
     @Override
-    public List<User> getAllUsersFullInfo() {
+    public List<User> getAllUsers() {
         try (SessionManager sessionManager = userDao.getSessionManager()) {
             sessionManager.beginSession();
             try {
                 var users = userDao.findAll();
                 logger.info("users size: {}", users != null ? users.size() : 0);
-                if (users != null) {
-                    users.forEach(user -> {user.getAddress().getStreet(); user.getPhones().forEach(phoneDataSet -> phoneDataSet.getNumber());});
-                }
                 return users;
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);

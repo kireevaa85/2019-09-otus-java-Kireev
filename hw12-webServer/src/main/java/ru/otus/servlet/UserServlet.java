@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class UserServlet extends HttpServlet {
+    private static final String USER_PAGE_TEMPLATE = "user.html";
 
     private final DBServiceUser dbServiceUser;
     private final TemplateProcessor templateProcessor;
@@ -24,6 +25,6 @@ public class UserServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse response) throws IOException {
         Map<String, Object> paramsMap = new HashMap<>();
         response.setContentType("text/html");
-        response.getWriter().println(templateProcessor.getPage(USERS_PAGE_TEMPLATE, paramsMap));
+        response.getWriter().println(templateProcessor.getPage(USER_PAGE_TEMPLATE, paramsMap));
     }
 }

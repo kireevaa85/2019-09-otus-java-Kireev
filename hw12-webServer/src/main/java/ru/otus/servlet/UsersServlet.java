@@ -29,7 +29,7 @@ public class UsersServlet extends HttpServlet {
         Map<String, Object> paramsMap = new HashMap<>();
 
         StringBuilder sb = new StringBuilder();
-        var allUsers = dbServiceUser.getAllUsersFullInfo();
+        var allUsers = dbServiceUser.getAllUsers();
         allUsers.forEach(user -> sb.append("<tr>\n            <td>")
                 .append(user.getId())
                 .append("</td>\n")
@@ -38,12 +38,6 @@ public class UsersServlet extends HttpServlet {
                 .append("</td>\n")
                 .append("            <td>")
                 .append(user.getAge())
-                .append("</td>\n")
-                .append("            <td>")
-                .append(user.getAddress().toString())
-                .append("</td>\n")
-                .append("            <td>")
-                .append(user.getPhones().toString())
                 .append("</td>\n")
                 .append("        </tr>"));
         paramsMap.put(TEMPLATE_ATTR_USERS, sb.toString());

@@ -62,22 +62,13 @@ public class Main {
     }
 
     private static void initUsers(DBServiceUser dbServiceUser) {
-        User initialUser = new User("dbServiceUser1", 18, new AddressDataSet("street1"));
-        initialUser.addPhone(new PhoneDataSet("phoneNumber1"));
-        initialUser.addPhone(new PhoneDataSet("phoneNumber2"));
-        initialUser.addPhone(new PhoneDataSet("phoneNumber3"));
+        User initialUser = new User("dbServiceUser1", 18);
         dbServiceUser.saveUser(initialUser);
 
-        initialUser = new User("dbServiceUser2", 19, new AddressDataSet("street2"));
-        initialUser.addPhone(new PhoneDataSet("phoneNumber4"));
-        initialUser.addPhone(new PhoneDataSet("phoneNumber5"));
-        initialUser.addPhone(new PhoneDataSet("phoneNumber6"));
+        initialUser = new User("dbServiceUser2", 19);
         dbServiceUser.saveUser(initialUser);
 
-        initialUser = new User("dbServiceUser3", 20, new AddressDataSet("street3"));
-        initialUser.addPhone(new PhoneDataSet("phoneNumber7"));
-        initialUser.addPhone(new PhoneDataSet("phoneNumber8"));
-        initialUser.addPhone(new PhoneDataSet("phoneNumber9"));
+        initialUser = new User("dbServiceUser3", 20);
         dbServiceUser.saveUser(initialUser);
     }
 
