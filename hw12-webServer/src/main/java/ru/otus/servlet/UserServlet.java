@@ -36,7 +36,7 @@ public class UserServlet extends HttpServlet {
         User newUser = new User(name, age);
         dbServiceUser.saveUser(newUser);
 
-        resp.sendRedirect("index.html");
+        resp.sendRedirect(INDEX_PAGE_TEMPLATE);
     }
 
 }

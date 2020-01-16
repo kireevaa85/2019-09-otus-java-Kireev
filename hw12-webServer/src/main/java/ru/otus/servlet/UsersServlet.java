@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,20 +28,8 @@ public class UsersServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse response) throws IOException {
         Map<String, Object> paramsMap = new HashMap<>();
-
-        StringBuilder sb = new StringBuilder();
         var allUsers = dbServiceUser.getAllUsers();
-        allUsers.forEach(user -> sb.append("<tr>\n            <td>")
-                .append(user.getId())
-                .append("</td>\n")
-                .append("            <td>")
-                .append(user.getName())
-                .append("</td>\n")
-                .append("            <td>")
-                .append(user.getAge())
-                .append("</td>\n")
-                .append("        </tr>"));
-        paramsMap.put(TEMPLATE_ATTR_USERS, sb.toString());
+        paramsMap.put(TEMPLATE_ATTR_USERS, allUsers != null ? allUsers : new ArrayList<>());
 
         response.setContentType("text/html");
         response.getWriter().println(templateProcessor.getPage(USERS_PAGE_TEMPLATE, paramsMap));

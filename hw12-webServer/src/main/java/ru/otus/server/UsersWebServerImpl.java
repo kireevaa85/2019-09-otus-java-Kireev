@@ -29,18 +29,16 @@ public class UsersWebServerImpl implements UsersWebServer {
     private static final String CONSTRAINT_NAME = "auth";
 
     private final int port;
-    private final SecurityType securityType;
     private final LoginService loginServiceForBasicSecurity;
     private final DBServiceUser dbServiceUser;
     private final TemplateProcessor templateProcessor;
     private final Server server;
 
-    public UsersWebServerImpl(int port, SecurityType securityType,
+    public UsersWebServerImpl(int port,
                               LoginService loginServiceForBasicSecurity,
                               DBServiceUser dbServiceUser,
                               TemplateProcessor templateProcessor) {
         this.port = port;
-        this.securityType = securityType;
         this.loginServiceForBasicSecurity = loginServiceForBasicSecurity;
         this.dbServiceUser = dbServiceUser;
         this.templateProcessor = templateProcessor;
@@ -92,13 +90,7 @@ public class UsersWebServerImpl implements UsersWebServer {
     }
 
     private Handler applySecurity(ServletContextHandler servletContextHandler) {
-        if (securityType == SecurityType.NONE) {
-            return servletContextHandler;
-        } else if (securityType == SecurityType.BASIC) {
-            return createBasicAuthSecurityHandler(servletContextHandler, "/users", "/user");
-        } else {
-            throw new InvalidSecurityTypeException(securityType);
-        }
+        return createBasicAuthSecurityHandler(servletContextHandler, "/users", "/user");
     }
 
     private SecurityHandler createBasicAuthSecurityHandler(ServletContextHandler context, String... paths) {

@@ -13,7 +13,6 @@ import ru.otus.helpers.FileSystemHelper;
 import ru.otus.hibernate.HibernateUtils;
 import ru.otus.hibernate.dao.UserDaoHibernate;
 import ru.otus.hibernate.sessionmanager.SessionManagerHibernate;
-import ru.otus.server.SecurityType;
 import ru.otus.server.UsersWebServer;
 import ru.otus.server.UsersWebServerImpl;
 import ru.otus.services.TemplateProcessor;
@@ -25,11 +24,12 @@ import ru.otus.services.TemplateProcessorImpl;
     // Стартовая страница
     http://localhost:8080
 
+    // Страница создания пользователя
+    http://localhost:8080/user
+
     // Страница пользователей
     http://localhost:8080/users
 
-    // REST сервис
-    http://localhost:8080/api/user/3
 */
 public class Main {
     private static final int WEB_SERVER_PORT = 8080;
@@ -52,7 +52,6 @@ public class Main {
         TemplateProcessor templateProcessor = new TemplateProcessorImpl(TEMPLATES_DIR);
 
         UsersWebServer usersWebServer = new UsersWebServerImpl(WEB_SERVER_PORT,
-                SecurityType.BASIC,
                 loginServiceForBasicSecurity,
                 dbServiceUser,
                 templateProcessor);

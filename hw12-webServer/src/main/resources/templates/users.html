@@ -14,7 +14,13 @@
                 </tr>
             </thead>
             <tbody>
-                ${users}
+                <#list users as user>
+                <tr>
+                    <td>${user.id}</td>
+                    <td>${user.name}</td>
+                    <td>${user.age}</td>
+                </tr>
+                </#list>
             </tbody>
         </table>
         <a href="/index.html">Перейти на стартовую страницу примера</a>
