@@ -2,6 +2,7 @@ package ru.otus.hibernate.dao;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
 import ru.otus.api.dao.UserDao;
 import ru.otus.api.dao.UserDaoException;
 import ru.otus.api.model.User;
@@ -11,6 +12,7 @@ import ru.otus.hibernate.sessionmanager.SessionManagerHibernate;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public class UserDaoHibernate implements UserDao {
     private static Logger logger = LoggerFactory.getLogger(UserDaoHibernate.class);
 
