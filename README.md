@@ -13,6 +13,7 @@ hw08-VeloGson - "Cвой json object writer"<br>
 hw09-VeloORM - "Самодельный ORM"<br>
 hw10-Hibernate - "Использование Hibernate"<br>
 hw11-Cache - "Свой cache engine"<br>
+hw12-WebServer - "Веб сервер"<br>
 <br>
 
 Студент:<br>
