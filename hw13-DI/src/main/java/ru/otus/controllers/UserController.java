@@ -25,6 +25,11 @@ public class UserController {
         this.dbServiceUser = dbServiceUser;
     }
 
+    @GetMapping("/")
+    public String  startPageView(Model model) {
+        return INDEX_PAGE_TEMPLATE;
+    }
+
     @GetMapping("/users")
     public String userListView(Model model) {
         List<User> users = dbServiceUser.getAllUsers();

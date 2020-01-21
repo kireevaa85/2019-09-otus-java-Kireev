@@ -1,11 +1,13 @@
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
     <head>
+        <meta charset="UTF-8"/>
         <title>Пользователи</title>
     </head>
 
     <body>
         <h4>Список пользователей</h4>
-        <table style="width: 400px">
+        <table class="users" style="width: 400px">
             <thead>
                 <tr>
                     <td style="width: 50px">Id</td>
@@ -14,13 +16,11 @@
                 </tr>
             </thead>
             <tbody>
-                <#list users as user>
-                <tr>
-                    <td>${user.id}</td>
-                    <td>${user.name}</td>
-                    <td>${user.age}</td>
+                <tr th:each="user : ${users}">
+                    <td th:text="${user.id}"></td>
+                    <td th:text="${user.name}"></td>
+                    <td th:text="${user.age}"></td>
                 </tr>
-                </#list>
             </tbody>
         </table>
         <a href="/index.html">Перейти на стартовую страницу примера</a>

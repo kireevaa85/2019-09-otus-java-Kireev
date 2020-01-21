@@ -19,6 +19,18 @@ public class DBServiceUserImpl implements DBServiceUser {
 
     public DBServiceUserImpl(UserDao userDao) {
         this.userDao = userDao;
+        initUsers();
+    }
+
+    private void initUsers() {
+        User initialUser = new User("dbServiceUser1", 18);
+        this.saveUser(initialUser);
+
+        initialUser = new User("dbServiceUser2", 19);
+        this.saveUser(initialUser);
+
+        initialUser = new User("dbServiceUser3", 20);
+        this.saveUser(initialUser);
     }
 
     @Override
