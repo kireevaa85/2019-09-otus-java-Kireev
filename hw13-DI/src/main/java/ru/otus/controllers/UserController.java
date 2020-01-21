@@ -45,11 +45,8 @@ public class UserController {
 
     @PostMapping("/user")
     public RedirectView userSave(@ModelAttribute User user) {
-//        String name = req.getParameter("name");
-//        int age = Integer.parseInt(req.getParameter("age"));
-//        User newUser = new User(name, age);
         dbServiceUser.saveUser(user);
-        return new RedirectView(INDEX_PAGE_TEMPLATE, true);
+        return new RedirectView("/");
     }
 
 }
