@@ -14,6 +14,7 @@ hw09-VeloORM - "Самодельный ORM"<br>
 hw10-Hibernate - "Использование Hibernate"<br>
 hw11-Cache - "Свой cache engine"<br>
 hw12-WebServer - "Веб сервер"<br>
+hw13-DI - "Приложение с IoC контейнером"<br>
 <br>
 
 Студент:<br>

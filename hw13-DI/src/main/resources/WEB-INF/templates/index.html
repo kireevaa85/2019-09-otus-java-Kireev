@@ -1,0 +1,17 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Index</title>
+</head>
+<body>
+<div class="top">
+    <img src="img/logo.svg" style="width: 300px; height: 300px" alt="logo">
+    <br/>
+    <h3>Добро пожаловать на стартовую страницу примера</h3>
+    <a th:href="@{/user}" href="user.html">Перейти на странцу создания пользователя (защищено паролем администратора)</a>
+    <br/>
+    <a th:href="@{/users}" href="users.html">Перейти на странцу информации о пользователях (защищено паролем администратора)</a>
+</div>
+</body>
+</html>
