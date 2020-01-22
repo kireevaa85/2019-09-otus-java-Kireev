@@ -23,6 +23,18 @@ public class UserController {
 
     public UserController(DBServiceUser dbServiceUser) {
         this.dbServiceUser = dbServiceUser;
+        initUsers();
+    }
+
+    private void initUsers() {
+        User initialUser = new User("dbServiceUser1", 18);
+        dbServiceUser.saveUser(initialUser);
+
+        initialUser = new User("dbServiceUser2", 19);
+        dbServiceUser.saveUser(initialUser);
+
+        initialUser = new User("dbServiceUser3", 20);
+        dbServiceUser.saveUser(initialUser);
     }
 
     @GetMapping("/")
@@ -46,7 +58,7 @@ public class UserController {
     @PostMapping("/user")
     public RedirectView userSave(@ModelAttribute User user) {
         dbServiceUser.saveUser(user);
-        return new RedirectView("/");
+        return new RedirectView("/", true);
     }
 
 }
