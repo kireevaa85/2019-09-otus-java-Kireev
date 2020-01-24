@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.view.RedirectView;
 import ru.otus.api.model.User;
 import ru.otus.api.service.DBServiceUser;
+import ru.otus.services.InitDefaultUsersService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,20 +22,9 @@ public class UserController {
 
     private final DBServiceUser dbServiceUser;
 
-    public UserController(DBServiceUser dbServiceUser) {
+    public UserController(InitDefaultUsersService initDefaultUsersService, DBServiceUser dbServiceUser) {
+        initDefaultUsersService.init();;
         this.dbServiceUser = dbServiceUser;
-        initUsers();
-    }
-
-    private void initUsers() {
-        User initialUser = new User("dbServiceUser1", 18);
-        dbServiceUser.saveUser(initialUser);
-
-        initialUser = new User("dbServiceUser2", 19);
-        dbServiceUser.saveUser(initialUser);
-
-        initialUser = new User("dbServiceUser3", 20);
-        dbServiceUser.saveUser(initialUser);
     }
 
     @GetMapping("/")
