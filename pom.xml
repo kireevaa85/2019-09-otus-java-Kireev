@@ -25,6 +25,7 @@
         <module>hw11-Cache</module>
         <module>hw12-webServer</module>
         <module>hw13-DI</module>
+        <module>hw14-Threads</module>
     </modules>
 
     <packaging>pom</packaging>
