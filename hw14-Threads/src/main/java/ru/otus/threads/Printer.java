@@ -15,7 +15,7 @@ public class Printer extends Thread {
     @Override
     public void run() {
         synchronized (monitor) {
-            while (true) {
+            while (!Thread.currentThread().isInterrupted()) {
                 System.out.println("\t".repeat(id) + nextNumber());
                 try {
                     Thread.sleep(250);
