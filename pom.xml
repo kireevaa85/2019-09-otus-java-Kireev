@@ -52,7 +52,7 @@
         <h2.version>1.4.200</h2.version>
         <log4j.version>2.13.3</log4j.version>
         <ehcache.version>3.8.1</ehcache.version>
-        <hibernate-core.version>5.4.4.Final</hibernate-core.version>
+        <hibernate-core.version>5.4.24.Final</hibernate-core.version>
         <jetty.version>9.4.25.v20191220</jetty.version>
         <freemarker.version>2.3.28</freemarker.version>
 
